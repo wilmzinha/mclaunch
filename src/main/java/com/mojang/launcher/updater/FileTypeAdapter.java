@@ -1,3 +1,11 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.gson.TypeAdapter
+ *  com.google.gson.stream.JsonReader
+ *  com.google.gson.stream.JsonWriter
+ */
 package com.mojang.launcher.updater;
 
 import com.google.gson.TypeAdapter;
@@ -8,7 +16,6 @@ import java.io.IOException;
 
 public class FileTypeAdapter
 extends TypeAdapter<File> {
-    @Override
     public void write(JsonWriter out, File value) throws IOException {
         if (value == null) {
             out.nullValue();
@@ -17,7 +24,6 @@ extends TypeAdapter<File> {
         }
     }
 
-    @Override
     public File read(JsonReader in) throws IOException {
         if (in.hasNext()) {
             String name = in.nextString();

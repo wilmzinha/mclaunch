@@ -1,3 +1,15 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.collect.Lists
+ *  com.google.common.collect.Maps
+ *  com.google.gson.Gson
+ *  org.apache.commons.io.FileUtils
+ *  org.apache.commons.io.IOUtils
+ *  org.apache.logging.log4j.LogManager
+ *  org.apache.logging.log4j.Logger
+ */
 package net.minecraft.launcher.updater;
 
 import com.google.common.collect.Lists;
@@ -22,15 +34,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.Proxy;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -71,8 +81,9 @@ implements VersionManager {
      */
     @Override
     public void refreshVersions() throws IOException {
-        Object object = this.refreshLock;
-        synchronized (object) {
+        Object object;
+        Object object2 = object = this.refreshLock;
+        synchronized (object2) {
             this.isRefreshing = true;
         }
         try {
@@ -82,8 +93,9 @@ implements VersionManager {
             this.remoteVersionList.refreshVersions();
         }
         catch (IOException ex2) {
-            Object object2 = this.refreshLock;
-            synchronized (object2) {
+            Object object22;
+            Object object3 = object22 = this.refreshLock;
+            synchronized (object3) {
                 this.isRefreshing = false;
             }
             throw ex2;
@@ -109,15 +121,16 @@ implements VersionManager {
     @Override
     public List<VersionSyncInfo> getVersions(VersionFilter<? extends ReleaseType> filter) {
         VersionSyncInfo syncInfo;
-        Object object = this.refreshLock;
-        synchronized (object) {
+        Object object;
+        Object object2 = object = this.refreshLock;
+        synchronized (object2) {
             if (this.isRefreshing) {
                 return new ArrayList<VersionSyncInfo>();
             }
         }
         ArrayList<VersionSyncInfo> result = new ArrayList<VersionSyncInfo>();
         HashMap<String, VersionSyncInfo> lookup = new HashMap<String, VersionSyncInfo>();
-        EnumMap<MinecraftReleaseType, Integer> counts = Maps.newEnumMap(MinecraftReleaseType.class);
+        EnumMap counts = Maps.newEnumMap(MinecraftReleaseType.class);
         for (MinecraftReleaseType type : MinecraftReleaseType.values()) {
             counts.put(type, 0);
         }
@@ -175,12 +188,9 @@ implements VersionManager {
 
     @Override
     public VersionSyncInfo getVersionSyncInfo(Version localVersion, Version remoteVersion) {
-        boolean installed;
-        boolean upToDate = installed = localVersion != null;
+        boolean installed = localVersion != null;
+        boolean upToDate = installed;
         CompleteMinecraftVersion resolved = null;
-        if (installed && remoteVersion != null) {
-            boolean bl = upToDate = !remoteVersion.getUpdatedTime().after(localVersion.getUpdatedTime());
-        }
         if (localVersion instanceof CompleteVersion) {
             try {
                 resolved = ((CompleteMinecraftVersion)localVersion).resolve(this);
@@ -272,27 +282,27 @@ implements VersionManager {
      * WARNING - Removed try catching itself - possible behaviour change.
      */
     private Set<Downloadable> getResourceFiles(Proxy proxy, File baseDirectory, CompleteMinecraftVersion version) {
-        HashSet<Downloadable> result;
-        result = new HashSet<Downloadable>();
+        HashSet<Downloadable> result = new HashSet<Downloadable>();
         InputStream inputStream = null;
         File assets = new File(baseDirectory, "assets");
         File objectsFolder = new File(assets, "objects");
         File indexesFolder = new File(assets, "indexes");
+        File virtualFolder = new File(assets, "virtual");
         long start = System.nanoTime();
         AssetIndexInfo indexInfo = version.getAssetIndex();
         File indexFile = new File(indexesFolder, indexInfo.getId() + ".json");
         try {
             URL indexUrl = indexInfo.getUrl();
             inputStream = indexUrl.openConnection(proxy).getInputStream();
-            String json = IOUtils.toString(inputStream);
-            FileUtils.writeStringToFile(indexFile, json);
-            AssetIndex index = this.gson.fromJson(json, AssetIndex.class);
+            String json = IOUtils.toString((InputStream)inputStream);
+            FileUtils.writeStringToFile((File)indexFile, (String)json);
+            AssetIndex index = (AssetIndex)this.gson.fromJson(json, AssetIndex.class);
             for (Map.Entry<AssetIndex.AssetObject, String> entry : index.getUniqueObjects().entrySet()) {
                 AssetIndex.AssetObject object = entry.getKey();
                 String filename = object.getHash().substring(0, 2) + "/" + object.getHash();
                 File file = new File(objectsFolder, filename);
-                if (file.isFile() && FileUtils.sizeOf(file) == object.getSize()) continue;
-                AssetDownloadable downloadable = new AssetDownloadable(proxy, entry.getValue(), object, "http://resources.download.minecraft.net/", objectsFolder);
+                if (file.isFile() && FileUtils.sizeOf((File)file) == object.getSize()) continue;
+                AssetDownloadable downloadable = new AssetDownloadable(proxy, entry.getValue(), object, "https://resources.download.minecraft.net/", objectsFolder);
                 downloadable.setExpectedSize(object.getSize());
                 result.add(downloadable);
             }
@@ -301,10 +311,16 @@ implements VersionManager {
             LOGGER.debug("Delta time to compare resources: " + delta / 1000000L + " ms ");
         }
         catch (Exception ex) {
-            MinecraftVersionManager.LOGGER.error("Couldn't download resources", ex);
-        } finally {
-            IOUtils.closeQuietly(inputStream);
+            try {
+                LOGGER.error("Couldn't download resources", (Throwable)ex);
+            }
+            catch (Throwable throwable) {
+                IOUtils.closeQuietly(inputStream);
+                throw throwable;
+            }
+            IOUtils.closeQuietly((InputStream)inputStream);
         }
+        IOUtils.closeQuietly((InputStream)inputStream);
         return result;
     }
 
@@ -356,6 +372,5 @@ implements VersionManager {
             LOGGER.info("Uninstalled " + version);
         }
     }
-
 }
 

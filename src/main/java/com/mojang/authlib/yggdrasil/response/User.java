@@ -1,3 +1,6 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
 package com.mojang.authlib.yggdrasil.response;
 
 import com.mojang.authlib.properties.PropertyMap;
@@ -5,6 +8,13 @@ import com.mojang.authlib.properties.PropertyMap;
 public class User {
     private String id;
     private PropertyMap properties;
+
+    public User() {
+    }
+
+    public User(String id) {
+        this.id = id;
+    }
 
     public String getId() {
         return this.id;

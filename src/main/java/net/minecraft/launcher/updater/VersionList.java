@@ -1,3 +1,12 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.collect.Maps
+ *  com.google.gson.Gson
+ *  com.google.gson.GsonBuilder
+ *  com.google.gson.TypeAdapterFactory
+ */
 package net.minecraft.launcher.updater;
 
 import com.google.common.collect.Maps;
@@ -10,7 +19,6 @@ import com.mojang.launcher.updater.LowerCaseEnumTypeAdapterFactory;
 import com.mojang.launcher.versions.CompleteVersion;
 import com.mojang.launcher.versions.ReleaseType;
 import com.mojang.launcher.versions.ReleaseTypeAdapterFactory;
-import com.mojang.launcher.versions.ReleaseTypeFactory;
 import com.mojang.launcher.versions.Version;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -35,10 +43,10 @@ public abstract class VersionList {
 
     public VersionList() {
         GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapterFactory(new LowerCaseEnumTypeAdapterFactory());
-        builder.registerTypeAdapter((Type)((Object)Date.class), new DateTypeAdapter());
-        builder.registerTypeAdapter((Type)((Object)ReleaseType.class), new ReleaseTypeAdapterFactory(MinecraftReleaseTypeFactory.instance()));
-        builder.registerTypeAdapter((Type)((Object)Argument.class), new Argument.Serializer());
+        builder.registerTypeAdapterFactory((TypeAdapterFactory)new LowerCaseEnumTypeAdapterFactory());
+        builder.registerTypeAdapter((Type)((Object)Date.class), (Object)new DateTypeAdapter());
+        builder.registerTypeAdapter((Type)((Object)ReleaseType.class), new ReleaseTypeAdapterFactory<MinecraftReleaseType>(MinecraftReleaseTypeFactory.instance()));
+        builder.registerTypeAdapter((Type)((Object)Argument.class), (Object)new Argument.Serializer());
         builder.enableComplexMapKeySerialization();
         builder.setPrettyPrinting();
         this.gson = builder.create();
@@ -137,7 +145,7 @@ public abstract class VersionList {
         if (version == null) {
             throw new IllegalArgumentException("Cannot serialize null!");
         }
-        return this.gson.toJson(version);
+        return this.gson.toJson((Object)version);
     }
 
     public abstract boolean hasAllFiles(CompleteMinecraftVersion var1, OperatingSystem var2);

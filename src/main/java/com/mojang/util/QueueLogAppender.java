@@ -1,3 +1,17 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  org.apache.logging.log4j.core.Filter
+ *  org.apache.logging.log4j.core.Layout
+ *  org.apache.logging.log4j.core.LogEvent
+ *  org.apache.logging.log4j.core.appender.AbstractAppender
+ *  org.apache.logging.log4j.core.config.plugins.Plugin
+ *  org.apache.logging.log4j.core.config.plugins.PluginAttribute
+ *  org.apache.logging.log4j.core.config.plugins.PluginElement
+ *  org.apache.logging.log4j.core.config.plugins.PluginFactory
+ *  org.apache.logging.log4j.core.layout.PatternLayout
+ */
 package com.mojang.util;
 
 import java.io.Serializable;
@@ -6,10 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -33,7 +45,6 @@ extends AbstractAppender {
         this.queue = queue;
     }
 
-    @Override
     public void append(LogEvent event) {
         if (this.queue.size() >= 250) {
             this.queue.clear();
@@ -59,10 +70,9 @@ extends AbstractAppender {
         }
         QUEUE_LOCK.writeLock().unlock();
         if (layout == null) {
-            //layout = PatternLayout.createLayout(null, null, null, null, false, false, null, null);
-            layout = PatternLayout.createLayout(null, null, null, null, Charset.defaultCharset(), false, false, null, null);
+            layout = PatternLayout.createLayout(null, null, null, null, (Charset)Charset.defaultCharset(), (boolean)false, (boolean)false, null, null);
         }
-        return new QueueLogAppender(name, filter, layout, ignoreExceptions, queue);
+        return new QueueLogAppender(name, filter, (Layout<? extends Serializable>)layout, ignoreExceptions, queue);
     }
 
     public static String getNextLogEvent(String queueName) {
@@ -73,7 +83,7 @@ extends AbstractAppender {
             try {
                 return queue.take();
             }
-            catch (InterruptedException ignored) {
+            catch (InterruptedException interruptedException) {
                 // empty catch block
             }
         }

@@ -1,3 +1,6 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
 package com.mojang.launcher.game.runner;
 
 import com.mojang.launcher.game.GameInstanceStatus;

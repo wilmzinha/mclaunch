@@ -1,3 +1,6 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
 package net.minecraft.launcher.ui.bottombar;
 
 import com.mojang.launcher.OperatingSystem;
@@ -9,22 +12,17 @@ import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.net.URI;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import net.minecraft.launcher.Launcher;
 import net.minecraft.launcher.LauncherConstants;
-import net.minecraft.launcher.MinecraftUserInterface;
 import net.minecraft.launcher.SwingUserInterface;
 import net.minecraft.launcher.game.GameLaunchDispatcher;
 import net.minecraft.launcher.profile.ProfileManager;
@@ -131,6 +129,5 @@ UserChangedListener {
             }
         });
     }
-
 }
 

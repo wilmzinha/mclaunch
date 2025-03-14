@@ -1,7 +1,12 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.collect.Maps
+ */
 package net.minecraft.launcher.updater;
 
 import com.google.common.collect.Maps;
-import com.google.gson.Gson;
 import com.mojang.launcher.Http;
 import com.mojang.launcher.OperatingSystem;
 import com.mojang.launcher.versions.CompleteVersion;
@@ -36,7 +41,7 @@ extends VersionList {
             throw new IllegalArgumentException("Version must be a partial");
         }
         PartialVersion partial = (PartialVersion)version;
-        CompleteMinecraftVersion complete = this.gson.fromJson(Http.performGet(partial.getUrl(), this.proxy), CompleteMinecraftVersion.class);
+        CompleteMinecraftVersion complete = (CompleteMinecraftVersion)this.gson.fromJson(Http.performGet(partial.getUrl(), this.proxy), CompleteMinecraftVersion.class);
         this.replacePartialWithFull(partial, complete);
         return complete;
     }
@@ -44,7 +49,7 @@ extends VersionList {
     @Override
     public void refreshVersions() throws IOException {
         this.clearCache();
-        RawVersionList versionList = this.gson.fromJson(this.getContent(this.manifestUrl), RawVersionList.class);
+        RawVersionList versionList = (RawVersionList)this.gson.fromJson(this.getContent(this.manifestUrl), RawVersionList.class);
         for (Version version : versionList.getVersions()) {
             this.versions.add(version);
             this.versionsByName.put(version.getId(), version);
@@ -82,6 +87,5 @@ extends VersionList {
             return this.latest;
         }
     }
-
 }
 

@@ -1,17 +1,31 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.base.Objects
+ *  com.google.common.base.Predicate
+ *  com.google.gson.Gson
+ *  com.google.gson.GsonBuilder
+ *  org.apache.commons.io.Charsets
+ *  org.apache.commons.io.FileUtils
+ *  org.apache.commons.io.filefilter.FileFilterUtils
+ *  org.apache.commons.io.filefilter.IOFileFilter
+ *  org.apache.commons.io.filefilter.TrueFileFilter
+ *  org.apache.commons.lang3.StringUtils
+ *  org.apache.commons.lang3.text.StrSubstitutor
+ */
 package net.minecraft.launcher.game;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.UserType;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication;
 import com.mojang.launcher.LegacyPropertyMapSerializer;
 import com.mojang.launcher.OperatingSystem;
-import com.mojang.launcher.events.GameOutputLogProcessor;
 import com.mojang.launcher.game.GameInstanceStatus;
 import com.mojang.launcher.game.process.GameProcess;
 import com.mojang.launcher.game.process.GameProcessBuilder;
@@ -23,9 +37,7 @@ import com.mojang.launcher.updater.DateTypeAdapter;
 import com.mojang.launcher.updater.VersionSyncInfo;
 import com.mojang.launcher.updater.download.Downloadable;
 import com.mojang.launcher.updater.download.assets.AssetIndex;
-import com.mojang.launcher.versions.CompleteVersion;
 import com.mojang.launcher.versions.ExtractRules;
-import com.mojang.launcher.versions.ReleaseType;
 import com.mojang.util.UUIDTypeAdapter;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -34,23 +46,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.Reader;
 import java.lang.reflect.Type;
 import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
-import java.net.SocketAddress;
 import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
@@ -59,13 +65,9 @@ import net.minecraft.launcher.CompatibilityRule;
 import net.minecraft.launcher.CurrentLaunchFeatureMatcher;
 import net.minecraft.launcher.Launcher;
 import net.minecraft.launcher.LauncherConstants;
-import net.minecraft.launcher.MinecraftUserInterface;
-import net.minecraft.launcher.profile.AuthenticationDatabase;
 import net.minecraft.launcher.profile.LauncherVisibilityRule;
 import net.minecraft.launcher.profile.Profile;
-import net.minecraft.launcher.profile.ProfileManager;
 import net.minecraft.launcher.updater.ArgumentType;
-import net.minecraft.launcher.updater.AssetIndexInfo;
 import net.minecraft.launcher.updater.CompleteMinecraftVersion;
 import net.minecraft.launcher.updater.Library;
 import org.apache.commons.io.Charsets;
@@ -75,7 +77,6 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.StrSubstitutor;
-import org.apache.logging.log4j.Logger;
 
 public class MinecraftGameRunner
 extends AbstractGameRunner
@@ -101,16 +102,17 @@ implements GameProcessRunnable {
      */
     @Override
     protected void setStatus(GameInstanceStatus status) {
-        Object object = this.lock;
-        synchronized (object) {
+        Object object;
+        Object object2 = object = this.lock;
+        synchronized (object2) {
             if (this.nativeDir != null && status == GameInstanceStatus.IDLE) {
                 LOGGER.info("Deleting " + this.nativeDir);
-                if (!this.nativeDir.isDirectory() || FileUtils.deleteQuietly(this.nativeDir)) {
+                if (!this.nativeDir.isDirectory() || FileUtils.deleteQuietly((File)this.nativeDir)) {
                     this.nativeDir = null;
                 } else {
                     LOGGER.warn("Couldn't delete " + this.nativeDir + " - scheduling for deletion upon exit");
                     try {
-                        FileUtils.forceDeleteOnExit(this.nativeDir);
+                        FileUtils.forceDeleteOnExit((File)this.nativeDir);
                     }
                     catch (Throwable throwable) {
                         // empty catch block
@@ -176,10 +178,9 @@ implements GameProcessRunnable {
         if (!(serverResourcePacksDir = new File(gameDirectory, "server-resource-packs")).exists()) {
             serverResourcePacksDir.mkdirs();
         }
-        GameProcessBuilder processBuilder = new GameProcessBuilder(Objects.firstNonNull(this.selectedProfile.getJavaPath(), OperatingSystem.getCurrentPlatform().getJavaDir()));
+        GameProcessBuilder processBuilder = new GameProcessBuilder((String)Objects.firstNonNull((Object)this.selectedProfile.getJavaPath(), (Object)OperatingSystem.getCurrentPlatform().getJavaDir()));
         processBuilder.withSysOutFilter(new Predicate<String>(){
 
-            @Override
             public boolean apply(String input) {
                 return input.contains(MinecraftGameRunner.CRASH_IDENTIFIER_MAGIC);
             }
@@ -198,7 +199,7 @@ implements GameProcessRunnable {
         StrSubstitutor argumentsSubstitutor = this.createArgumentsSubstitutor(this.getVersion(), this.selectedProfile, gameDirectory, assetsDir, this.auth);
         this.getVersion().addArguments(ArgumentType.JVM, featureMatcher, processBuilder, argumentsSubstitutor);
         processBuilder.withArguments(this.getVersion().getMainClass());
-        LOGGER.info("Half command: " + StringUtils.join(processBuilder.getFullCommands(), " "));
+        LOGGER.info("Half command: " + StringUtils.join(processBuilder.getFullCommands(), (String)" "));
         this.getVersion().addArguments(ArgumentType.GAME, featureMatcher, processBuilder, argumentsSubstitutor);
         Proxy proxy = this.getLauncher().getProxy();
         PasswordAuthentication proxyAuth = this.getLauncher().getProxyAuth();
@@ -213,7 +214,7 @@ implements GameProcessRunnable {
         }
         processBuilder.withArguments(this.additionalLaunchArgs);
         try {
-            LOGGER.debug("Running " + StringUtils.join(processBuilder.getFullCommands(), " "));
+            LOGGER.debug("Running " + StringUtils.join(processBuilder.getFullCommands(), (String)" "));
             GameProcess process = this.processFactory.startGame(processBuilder);
             process.setExitRunnable(this);
             this.setStatus(GameInstanceStatus.PLAYING);
@@ -236,7 +237,7 @@ implements GameProcessRunnable {
     private AssetIndex getAssetIndex() throws IOException {
         String assetVersion = this.getVersion().getAssetIndex().getId();
         File indexFile = new File(new File(this.getAssetsDir(), "indexes"), assetVersion + ".json");
-        return this.gson.fromJson(FileUtils.readFileToString(indexFile, Charsets.UTF_8), AssetIndex.class);
+        return (AssetIndex)this.gson.fromJson(FileUtils.readFileToString((File)indexFile, (Charset)Charsets.UTF_8), AssetIndex.class);
     }
 
     private File getAssetsDir() {
@@ -254,16 +255,19 @@ implements GameProcessRunnable {
             LOGGER.warn("No assets index file " + virtualRoot + "; can't reconstruct assets");
             return virtualRoot;
         }
-        AssetIndex index = this.gson.fromJson(FileUtils.readFileToString(indexFile, Charsets.UTF_8), AssetIndex.class);
-        if (index.isVirtual()) {
+        AssetIndex index = (AssetIndex)this.gson.fromJson(FileUtils.readFileToString((File)indexFile, (Charset)Charsets.UTF_8), AssetIndex.class);
+        if (assetVersion.equals("legacy") || assetVersion.equals("pre-1.6") || index.isVirtual()) {
             LOGGER.info("Reconstructing virtual assets folder at " + virtualRoot);
             for (Map.Entry<String, AssetIndex.AssetObject> entry : index.getFileMap().entrySet()) {
                 File target = new File(virtualRoot, entry.getKey());
                 File original = new File(new File(objectDir, entry.getValue().getHash().substring(0, 2)), entry.getValue().getHash());
                 if (target.isFile()) continue;
-                FileUtils.copyFile(original, target, false);
+                FileUtils.copyFile((File)original, (File)target, (boolean)false);
             }
-            FileUtils.writeStringToFile(new File(virtualRoot, ".lastused"), this.dateAdapter.serializeToString(new Date()));
+            FileUtils.writeStringToFile((File)new File(virtualRoot, ".lastused"), (String)this.dateAdapter.serializeToString(new Date()));
+            File resourcesFolder = new File(this.getAssetsDir().getParentFile(), "resources");
+            FileUtils.deleteDirectory((File)resourcesFolder);
+            FileUtils.copyDirectory((File)virtualRoot, (File)resourcesFolder);
         }
         return virtualRoot;
     }
@@ -271,8 +275,8 @@ implements GameProcessRunnable {
     public StrSubstitutor createArgumentsSubstitutor(CompleteMinecraftVersion version, Profile selectedProfile, File gameDirectory, File assetsDirectory, UserAuthentication authentication) {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("auth_access_token", authentication.getAuthenticatedToken());
-        map.put("user_properties", new GsonBuilder().registerTypeAdapter((Type)((Object)PropertyMap.class), new LegacyPropertyMapSerializer()).create().toJson(authentication.getUserProperties()));
-        map.put("user_property_map", new GsonBuilder().registerTypeAdapter((Type)((Object)PropertyMap.class), new PropertyMap.Serializer()).create().toJson(authentication.getUserProperties()));
+        map.put("user_properties", new GsonBuilder().registerTypeAdapter((Type)((Object)PropertyMap.class), (Object)new LegacyPropertyMapSerializer()).create().toJson((Object)authentication.getUserProperties()));
+        map.put("user_property_map", new GsonBuilder().registerTypeAdapter((Type)((Object)PropertyMap.class), (Object)new PropertyMap.Serializer()).create().toJson((Object)authentication.getUserProperties()));
         if (authentication.isLoggedIn() && authentication.canPlayOnline()) {
             if (authentication instanceof YggdrasilUserAuthentication) {
                 map.put("auth_session", String.format("token:%s:%s", authentication.getAuthenticatedToken(), UUIDTypeAdapter.fromUUID(authentication.getSelectedProfile().getId())));
@@ -287,8 +291,12 @@ implements GameProcessRunnable {
             map.put("auth_uuid", UUIDTypeAdapter.fromUUID(authentication.getSelectedProfile().getId()));
             map.put("user_type", authentication.getUserType().getName());
         } else {
-            map.put("auth_player_name", "Player");
-            map.put("auth_uuid", new UUID(0L, 0L).toString());
+            String user = Launcher.getCurrentInstance().getProfileManager().getSelectedUser();
+            if (user.startsWith("demo-")) {
+                user = user.substring(user.indexOf("-") + 1);
+            }
+            map.put("auth_player_name", user);
+            map.put("auth_uuid", UUIDTypeAdapter.fromUUID(UUID.nameUUIDFromBytes(("minecraft:" + user).getBytes())));
             map.put("user_type", UserType.LEGACY.getName());
         }
         map.put("profile_name", selectedProfile.getName());
@@ -314,7 +322,7 @@ implements GameProcessRunnable {
                 map.put("asset=" + entry.getKey(), path);
             }
         }
-        catch (IOException assetIndex) {
+        catch (IOException iOException) {
             // empty catch block
         }
         map.put("launcher_name", "java-minecraft-launcher");
@@ -332,27 +340,27 @@ implements GameProcessRunnable {
         if (!sourceDir.isDirectory()) {
             return;
         }
-        IOFileFilter migratableFilter = FileFilterUtils.notFileFilter(FileFilterUtils.or(FileFilterUtils.nameFileFilter("indexes"), FileFilterUtils.nameFileFilter("objects"), FileFilterUtils.nameFileFilter("virtual"), FileFilterUtils.nameFileFilter("skins")));
-        for (File file : new TreeSet<File>(FileUtils.listFiles(sourceDir, TrueFileFilter.TRUE, migratableFilter))) {
+        IOFileFilter migratableFilter = FileFilterUtils.notFileFilter((IOFileFilter)FileFilterUtils.or((IOFileFilter[])new IOFileFilter[]{FileFilterUtils.nameFileFilter((String)"indexes"), FileFilterUtils.nameFileFilter((String)"objects"), FileFilterUtils.nameFileFilter((String)"virtual"), FileFilterUtils.nameFileFilter((String)"skins")}));
+        for (File file : FileUtils.listFiles(sourceDir, TrueFileFilter.TRUE, migratableFilter)) {
             String hash = Downloadable.getDigest(file, "SHA-1", 40);
             File destinationFile = new File(objectsDir, hash.substring(0, 2) + "/" + hash);
             if (!destinationFile.exists()) {
-                LOGGER.info("Migrated old asset {} into {}", file, destinationFile);
+                LOGGER.info("Migrated old asset {} into {}", (Object)file, (Object)destinationFile);
                 try {
-                    FileUtils.copyFile(file, destinationFile);
+                    FileUtils.copyFile((File)file, (File)destinationFile);
                 }
                 catch (IOException e) {
                     LOGGER.error("Couldn't migrate old asset", (Throwable)e);
                 }
             }
-            FileUtils.deleteQuietly(file);
+            FileUtils.deleteQuietly((File)file);
         }
         File[] assets = sourceDir.listFiles();
         if (assets != null) {
             for (File file : assets) {
                 if (file.getName().equals("indexes") || file.getName().equals("objects") || file.getName().equals("virtual") || file.getName().equals("skins")) continue;
-                LOGGER.info("Cleaning up old assets directory {} after migration", file);
-                FileUtils.deleteQuietly(file);
+                LOGGER.info("Cleaning up old assets directory {} after migration", (Object)file);
+                FileUtils.deleteQuietly((File)file);
             }
         }
     }
@@ -367,9 +375,8 @@ implements GameProcessRunnable {
             Map<OperatingSystem, String> nativesPerOs = library.getNatives();
             if (nativesPerOs == null || nativesPerOs.get((Object)os) == null) continue;
             File file = new File(this.getLauncher().getWorkingDirectory(), "libraries/" + library.getArtifactPath(nativesPerOs.get((Object)os)));
-            ZipFile zip = new ZipFile(file);
             ExtractRules extractRules = library.getExtractRules();
-            try {
+            try (ZipFile zip = new ZipFile(file);){
                 Enumeration<? extends ZipEntry> entries = zip.entries();
                 while (entries.hasMoreElements()) {
                     ZipEntry entry = entries.nextElement();
@@ -395,9 +402,6 @@ implements GameProcessRunnable {
                         Downloadable.closeSilently(inputStream);
                     }
                 }
-            }
-            finally {
-                zip.close();
             }
         }
     }
@@ -426,60 +430,71 @@ implements GameProcessRunnable {
      * WARNING - Removed try catching itself - possible behaviour change.
      */
     @Override
-    public void onGameProcessEnded(final GameProcess process) {
-        final int exitCode = process.getExitCode();
-        if (exitCode == 0) {
-            MinecraftGameRunner.LOGGER.info("Game ended with no troubles detected (exit code " + exitCode + ")");
-            if (this.visibilityRule == LauncherVisibilityRule.CLOSE_LAUNCHER) {
-                MinecraftGameRunner.LOGGER.info("Following visibility rule and exiting launcher as the game has ended");
-                this.getLauncher().shutdownLauncher();
-            } else if (this.visibilityRule == LauncherVisibilityRule.HIDE_LAUNCHER) {
-                MinecraftGameRunner.LOGGER.info("Following visibility rule and showing launcher as the game has ended");
+    public void onGameProcessEnded(GameProcess process) {
+        block10: {
+            String errorText;
+            block12: {
+                int exitCode;
+                block11: {
+                    exitCode = process.getExitCode();
+                    if (exitCode != 0) break block11;
+                    LOGGER.info("Game ended with no troubles detected (exit code " + exitCode + ")");
+                    if (this.visibilityRule == LauncherVisibilityRule.CLOSE_LAUNCHER) {
+                        LOGGER.info("Following visibility rule and exiting launcher as the game has ended");
+                        this.getLauncher().shutdownLauncher();
+                    } else if (this.visibilityRule == LauncherVisibilityRule.HIDE_LAUNCHER) {
+                        LOGGER.info("Following visibility rule and showing launcher as the game has ended");
+                        this.minecraftLauncher.getUserInterface().setVisible(true);
+                    }
+                    break block10;
+                }
+                LOGGER.error("Game ended with bad state (exit code " + exitCode + ")");
+                LOGGER.info("Ignoring visibility rule and showing launcher due to a game crash");
                 this.minecraftLauncher.getUserInterface().setVisible(true);
-            }
-        } else {
-            MinecraftGameRunner.LOGGER.error("Game ended with bad state (exit code " + exitCode + ")");
-            MinecraftGameRunner.LOGGER.info("Ignoring visibility rule and showing launcher due to a game crash");
-            this.minecraftLauncher.getUserInterface().setVisible(true);
-            String errorText = null;
-            final Collection<String> sysOutLines = process.getSysOutLines();
-            final String[] sysOut = sysOutLines.toArray(new String[ sysOutLines.size() ]);
-            for (int i = sysOut.length - 1; i >= 0; --i) {
-                final String line = sysOut[ i ];
-                final int pos = line.lastIndexOf("#@!@#");
-                if (pos >= 0 && pos < line.length() - "#@!@#".length() - 1) {
-                    errorText = line.substring(pos + "#@!@#".length()).trim();
+                errorText = null;
+                Collection<String> sysOutLines = process.getSysOutLines();
+                String[] sysOut = sysOutLines.toArray(new String[sysOutLines.size()]);
+                for (int i = sysOut.length - 1; i >= 0; --i) {
+                    String line = sysOut[i];
+                    int pos = line.lastIndexOf(CRASH_IDENTIFIER_MAGIC);
+                    if (pos < 0 || pos >= line.length() - CRASH_IDENTIFIER_MAGIC.length() - 1) continue;
+                    errorText = line.substring(pos + CRASH_IDENTIFIER_MAGIC.length()).trim();
                     break;
                 }
-            }
-            if (errorText != null) {
-                final File file = new File(errorText);
-                if (file.isFile()) {
-                    MinecraftGameRunner.LOGGER.info("Crash report detected, opening: " + errorText);
-                    InputStream inputStream = null;
-                    try {
-                        inputStream = new FileInputStream(file);
-                        final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                        final StringBuilder result = new StringBuilder();
-                        String line2;
-                        while ((line2 = reader.readLine()) != null) {
-                            if (result.length() > 0) {
-                                result.append("\n");
-                            }
-                            result.append(line2);
+                if (errorText == null) break block10;
+                File file = new File(errorText);
+                if (!file.isFile()) break block12;
+                LOGGER.info("Crash report detected, opening: " + errorText);
+                FileInputStream inputStream = null;
+                try {
+                    String line2;
+                    inputStream = new FileInputStream(file);
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                    StringBuilder result = new StringBuilder();
+                    while ((line2 = reader.readLine()) != null) {
+                        if (result.length() > 0) {
+                            result.append("\n");
                         }
-                        reader.close();
-                        this.minecraftLauncher.getUserInterface().showCrashReport(this.getVersion(), file,
-                                result.toString());
-                    } catch (IOException e) {
-                        MinecraftGameRunner.LOGGER.error("Couldn't open crash report", e);
-                    } finally {
-                        Downloadable.closeSilently(inputStream);
+                        result.append(line2);
                     }
-                } else {
-                    MinecraftGameRunner.LOGGER.error("Crash report detected, but unknown format: " + errorText);
+                    reader.close();
+                    this.minecraftLauncher.getUserInterface().showCrashReport(this.getVersion(), file, result.toString());
                 }
+                catch (IOException e) {
+                    try {
+                        LOGGER.error("Couldn't open crash report", (Throwable)e);
+                    }
+                    catch (Throwable throwable) {
+                        Downloadable.closeSilently(inputStream);
+                        throw throwable;
+                    }
+                    Downloadable.closeSilently(inputStream);
+                    break block10;
+                }
+                Downloadable.closeSilently(inputStream);
+                break block10;
             }
+            LOGGER.error("Crash report detected, but unknown format: " + errorText);
         }
         this.setStatus(GameInstanceStatus.IDLE);
     }
@@ -495,6 +510,5 @@ implements GameProcessRunnable {
     public Profile getSelectedProfile() {
         return this.selectedProfile;
     }
-
 }
 

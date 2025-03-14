@@ -1,7 +1,9 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
 package com.mojang.launcher.updater;
 
 import com.mojang.launcher.versions.Version;
-import java.util.Date;
 
 public class VersionSyncInfo {
     private final Version localVersion;
@@ -63,11 +65,7 @@ public class VersionSyncInfo {
     public static enum VersionSource {
         REMOTE,
         LOCAL;
-        
 
-        private VersionSource() {
-        }
     }
-
 }
 

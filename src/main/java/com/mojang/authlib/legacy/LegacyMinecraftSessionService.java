@@ -1,6 +1,8 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
 package com.mojang.authlib.legacy;
 
-import com.mojang.authlib.AuthenticationService;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.HttpAuthenticationService;
 import com.mojang.authlib.exceptions.AuthenticationException;

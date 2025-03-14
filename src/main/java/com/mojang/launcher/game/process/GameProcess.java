@@ -1,3 +1,9 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.base.Predicate
+ */
 package com.mojang.launcher.game.process;
 
 import com.google.common.base.Predicate;

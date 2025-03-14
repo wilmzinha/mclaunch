@@ -1,3 +1,10 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  org.apache.logging.log4j.LogManager
+ *  org.apache.logging.log4j.Logger
+ */
 package net.minecraft.launcher.ui;
 
 import java.awt.Color;
@@ -5,11 +12,8 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Paint;
 import java.awt.geom.Point2D;
-import java.awt.image.ImageObserver;
 import java.io.IOException;
-import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import org.apache.logging.log4j.LogManager;
@@ -63,10 +67,10 @@ extends JPanel {
 
     protected void overlayGradient(int width, int height, Graphics2D graphics) {
         int gh = 1;
-        graphics.setPaint(new GradientPaint(new Point2D.Float(0.0f, 0.0f), new Color(553648127, true), new Point2D.Float(0.0f, gh), new Color(0, true)));
+        graphics.setPaint(new GradientPaint(new Point2D.Float(0.0f, 0.0f), new Color(0x20FFFFFF, true), new Point2D.Float(0.0f, gh), new Color(0, true)));
         graphics.fillRect(0, 0, width, gh);
         gh = height;
-        graphics.setPaint(new GradientPaint(new Point2D.Float(0.0f, 0.0f), new Color(0, true), new Point2D.Float(0.0f, gh), new Color(1610612736, true)));
+        graphics.setPaint(new GradientPaint(new Point2D.Float(0.0f, 0.0f), new Color(0, true), new Point2D.Float(0.0f, gh), new Color(0x60000000, true)));
         graphics.fillRect(0, 0, width, gh);
     }
 }

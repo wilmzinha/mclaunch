@@ -1,3 +1,9 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.gson.Gson
+ */
 package net.minecraft.hopper;
 
 import com.google.gson.Gson;

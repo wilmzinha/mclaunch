@@ -1,3 +1,16 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.gson.JsonArray
+ *  com.google.gson.JsonDeserializationContext
+ *  com.google.gson.JsonDeserializer
+ *  com.google.gson.JsonElement
+ *  com.google.gson.JsonObject
+ *  com.google.gson.JsonParseException
+ *  com.google.gson.JsonSerializationContext
+ *  com.google.gson.JsonSerializer
+ */
 package net.minecraft.launcher.profile;
 
 import com.google.gson.JsonArray;
@@ -8,20 +21,17 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.mojang.authlib.Agent;
 import com.mojang.authlib.AuthenticationService;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import java.lang.reflect.Type;
-import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import net.minecraft.launcher.Launcher;
 
 public class AuthenticationDatabase {
@@ -102,7 +112,6 @@ public class AuthenticationDatabase {
             this.launcher = launcher;
         }
 
-        @Override
         public AuthenticationDatabase deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             HashMap<String, UserAuthentication> services = new HashMap<String, UserAuthentication>();
             Map<String, Map<String, Object>> credentials = this.deserializeCredentials((JsonObject)json, context);
@@ -117,21 +126,21 @@ public class AuthenticationDatabase {
 
         protected Map<String, Map<String, Object>> deserializeCredentials(JsonObject json, JsonDeserializationContext context) {
             LinkedHashMap<String, Map<String, Object>> result = new LinkedHashMap<String, Map<String, Object>>();
-            for (Map.Entry<String, JsonElement> authEntry : json.entrySet()) {
-                LinkedHashMap<String, Object> credentials = new LinkedHashMap<String, Object>();
-                for (Map.Entry<String, JsonElement> credentialsEntry : ((JsonObject)authEntry.getValue()).entrySet()) {
-                    credentials.put(credentialsEntry.getKey(), this.deserializeCredential(credentialsEntry.getValue()));
+            for (Map.Entry authEntry : json.entrySet()) {
+                LinkedHashMap credentials = new LinkedHashMap();
+                for (Map.Entry credentialsEntry : ((JsonObject)authEntry.getValue()).entrySet()) {
+                    credentials.put(credentialsEntry.getKey(), this.deserializeCredential((JsonElement)credentialsEntry.getValue()));
                 }
-                result.put(authEntry.getKey(), credentials);
+                result.put((String)authEntry.getKey(), credentials);
             }
             return result;
         }
 
         private Object deserializeCredential(JsonElement element) {
             if (element instanceof JsonObject) {
-                LinkedHashMap<String, Object> result = new LinkedHashMap<String, Object>();
-                for (Map.Entry<String, JsonElement> entry : ((JsonObject)element).entrySet()) {
-                    result.put(entry.getKey(), this.deserializeCredential(entry.getValue()));
+                LinkedHashMap result = new LinkedHashMap();
+                for (Map.Entry entry : ((JsonObject)element).entrySet()) {
+                    result.put(entry.getKey(), this.deserializeCredential((JsonElement)entry.getValue()));
                 }
                 return result;
             }
@@ -155,6 +164,5 @@ public class AuthenticationDatabase {
             return context.serialize(credentials);
         }
     }
-
 }
 

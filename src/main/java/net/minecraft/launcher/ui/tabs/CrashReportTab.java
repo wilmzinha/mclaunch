@@ -1,26 +1,27 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  org.apache.logging.log4j.LogManager
+ *  org.apache.logging.log4j.Logger
+ */
 package net.minecraft.launcher.ui.tabs;
 
 import com.mojang.launcher.Http;
 import com.mojang.launcher.OperatingSystem;
-import com.mojang.launcher.updater.VersionManager;
 import com.mojang.launcher.versions.CompleteVersion;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.net.Proxy;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
@@ -28,15 +29,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import net.minecraft.hopper.HopperService;
-import net.minecraft.hopper.Problem;
 import net.minecraft.hopper.PublishResponse;
-import net.minecraft.hopper.Report;
 import net.minecraft.hopper.SubmitResponse;
 import net.minecraft.launcher.Launcher;
 import net.minecraft.launcher.LauncherConstants;
-import net.minecraft.launcher.MinecraftUserInterface;
-import net.minecraft.launcher.profile.Profile;
-import net.minecraft.launcher.profile.ProfileManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -213,6 +209,5 @@ extends JPanel {
             return result.toString();
         }
     }
-
 }
 

@@ -1,9 +1,15 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  org.apache.commons.io.FileUtils
+ *  org.apache.logging.log4j.LogManager
+ *  org.apache.logging.log4j.Logger
+ */
 package net.minecraft.launcher.updater;
 
-import com.google.gson.Gson;
 import com.mojang.launcher.OperatingSystem;
 import com.mojang.launcher.versions.CompleteVersion;
-import com.mojang.launcher.versions.ReleaseType;
 import com.mojang.launcher.versions.Version;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,8 +17,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.Collection;
-import java.util.Date;
 import java.util.Set;
 import net.minecraft.launcher.game.MinecraftReleaseType;
 import net.minecraft.launcher.updater.CompleteMinecraftVersion;
@@ -56,7 +60,7 @@ extends FileBasedVersionList {
             if (!directory.isDirectory() || !jsonFile.exists()) continue;
             try {
                 String path = "versions/" + id + "/" + id + ".json";
-                CompleteVersion version = this.gson.fromJson(this.getContent(path), CompleteMinecraftVersion.class);
+                CompleteVersion version = (CompleteVersion)this.gson.fromJson(this.getContent(path), CompleteMinecraftVersion.class);
                 if (version.getType() == null) {
                     LOGGER.warn("Ignoring: " + path + "; it has an invalid version specified");
                     return;
@@ -108,7 +112,7 @@ extends FileBasedVersionList {
         super.uninstallVersion(version);
         File dir = new File(this.baseVersionsDir, version.getId());
         if (dir.isDirectory()) {
-            FileUtils.deleteQuietly(dir);
+            FileUtils.deleteQuietly((File)dir);
         }
     }
 }

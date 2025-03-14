@@ -1,7 +1,12 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.collect.Iterators
+ */
 package net.minecraft.launcher.game;
 
 import com.google.common.collect.Iterators;
-import com.mojang.launcher.versions.ReleaseType;
 import com.mojang.launcher.versions.ReleaseTypeFactory;
 import java.util.Iterator;
 import net.minecraft.launcher.game.MinecraftReleaseType;

@@ -1,17 +1,19 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  org.apache.logging.log4j.LogManager
+ *  org.apache.logging.log4j.Logger
+ */
 package net.minecraft.launcher.ui.popups.profile;
 
 import com.mojang.launcher.OperatingSystem;
-import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Container;
-import java.awt.Frame;
-import java.awt.LayoutManager;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import javax.swing.Box;
@@ -21,10 +23,8 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import net.minecraft.launcher.Launcher;
-import net.minecraft.launcher.MinecraftUserInterface;
 import net.minecraft.launcher.SwingUserInterface;
 import net.minecraft.launcher.profile.Profile;
 import net.minecraft.launcher.profile.ProfileManager;
@@ -144,6 +144,5 @@ implements ActionListener {
         dialog.setLocationRelativeTo(frame);
         dialog.setVisible(true);
     }
-
 }
 

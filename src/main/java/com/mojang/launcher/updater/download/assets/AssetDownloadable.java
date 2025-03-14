@@ -1,13 +1,22 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  org.apache.commons.io.FileUtils
+ *  org.apache.commons.io.IOUtils
+ *  org.apache.logging.log4j.LogManager
+ *  org.apache.logging.log4j.Logger
+ */
 package com.mojang.launcher.updater.download.assets;
 
 import com.mojang.launcher.updater.download.Downloadable;
 import com.mojang.launcher.updater.download.MonitoringInputStream;
-import com.mojang.launcher.updater.download.ProgressContainer;
 import com.mojang.launcher.updater.download.assets.AssetIndex;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.Proxy;
@@ -41,7 +50,6 @@ extends Downloadable {
 
     @Override
     public String download() throws IOException {
-        HttpURLConnection connection;
         this.status = Status.DOWNLOADING;
         ++this.numAttempts;
         File localAsset = this.getTarget();
@@ -53,11 +61,11 @@ extends Downloadable {
             this.ensureFileWritable(localCompressed);
         }
         if (localAsset.isFile()) {
-            if (FileUtils.sizeOf(localAsset) == this.asset.getSize()) {
+            if (FileUtils.sizeOf((File)localAsset) == this.asset.getSize()) {
                 return "Have local file and it's the same size; assuming it's okay!";
             }
-            LOGGER.warn("Had local file but it was the wrong size... had {} but expected {}", FileUtils.sizeOf(localAsset), this.asset.getSize());
-            FileUtils.deleteQuietly(localAsset);
+            LOGGER.warn("Had local file but it was the wrong size... had {} but expected {}", (Object)FileUtils.sizeOf((File)localAsset), (Object)this.asset.getSize());
+            FileUtils.deleteQuietly((File)localAsset);
             this.status = Status.DOWNLOADING;
         }
         if (localCompressed != null && localCompressed.isFile()) {
@@ -65,11 +73,11 @@ extends Downloadable {
             if (localCompressedHash.equalsIgnoreCase(this.asset.getCompressedHash())) {
                 return this.decompressAsset(localAsset, localCompressed);
             }
-            LOGGER.warn("Had local compressed but it was the wrong hash... expected {} but had {}", this.asset.getCompressedHash(), localCompressedHash);
-            FileUtils.deleteQuietly(localCompressed);
+            LOGGER.warn("Had local compressed but it was the wrong hash... expected {} but had {}", (Object)this.asset.getCompressedHash(), (Object)localCompressedHash);
+            FileUtils.deleteQuietly((File)localCompressed);
         }
         if (remoteCompressed != null && localCompressed != null) {
-            connection = this.makeConnection(remoteCompressed);
+            HttpURLConnection connection = this.makeConnection(remoteCompressed);
             int status = connection.getResponseCode();
             if (status / 100 == 2) {
                 this.updateExpectedSize(connection);
@@ -79,12 +87,12 @@ extends Downloadable {
                 if (hash.equalsIgnoreCase(this.asset.getCompressedHash())) {
                     return this.decompressAsset(localAsset, localCompressed);
                 }
-                FileUtils.deleteQuietly(localCompressed);
+                FileUtils.deleteQuietly((File)localCompressed);
                 throw new RuntimeException(String.format("Hash did not match downloaded compressed asset (Expected %s, downloaded %s)", this.asset.getCompressedHash(), hash));
             }
             throw new RuntimeException("Server responded with " + status);
         }
-        connection = this.makeConnection(remoteAsset);
+        HttpURLConnection connection = this.makeConnection(remoteAsset);
         int status = connection.getResponseCode();
         if (status / 100 == 2) {
             this.updateExpectedSize(connection);
@@ -94,7 +102,7 @@ extends Downloadable {
             if (hash.equalsIgnoreCase(this.asset.getHash())) {
                 return "Downloaded asset and hash matched successfully";
             }
-            FileUtils.deleteQuietly(localAsset);
+            FileUtils.deleteQuietly((File)localAsset);
             throw new RuntimeException(String.format("Hash did not match downloaded asset (Expected %s, downloaded %s)", this.asset.getHash(), hash));
         }
         throw new RuntimeException("Server responded with " + status);
@@ -111,33 +119,32 @@ extends Downloadable {
     protected String decompressAsset(File localAsset, File localCompressed) throws IOException {
         String hash;
         this.status = Status.EXTRACTING;
-        FileOutputStream outputStream = FileUtils.openOutputStream(localAsset);
-        GZIPInputStream inputStream = new GZIPInputStream(FileUtils.openInputStream(localCompressed));
+        FileOutputStream outputStream = FileUtils.openOutputStream((File)localAsset);
+        GZIPInputStream inputStream = new GZIPInputStream(FileUtils.openInputStream((File)localCompressed));
         try {
             hash = AssetDownloadable.copyAndDigest(inputStream, outputStream, "SHA", 40);
         }
         finally {
-            IOUtils.closeQuietly(outputStream);
-            IOUtils.closeQuietly(inputStream);
+            IOUtils.closeQuietly((OutputStream)outputStream);
+            IOUtils.closeQuietly((InputStream)inputStream);
         }
         this.status = Status.DOWNLOADING;
         if (hash.equalsIgnoreCase(this.asset.getHash())) {
             return "Had local compressed asset, unpacked successfully and hash matched";
         }
-        FileUtils.deleteQuietly(localAsset);
+        FileUtils.deleteQuietly((File)localAsset);
         throw new RuntimeException("Had local compressed asset but unpacked hash did not match (expected " + this.asset.getHash() + " but had " + hash + ")");
     }
 
     private static enum Status {
         DOWNLOADING("Downloading"),
         EXTRACTING("Extracting");
-        
+
         private final String name;
 
         private Status(String name) {
             this.name = name;
         }
     }
-
 }
 

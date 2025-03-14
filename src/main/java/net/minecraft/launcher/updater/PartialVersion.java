@@ -1,6 +1,8 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
 package net.minecraft.launcher.updater;
 
-import com.mojang.launcher.versions.ReleaseType;
 import com.mojang.launcher.versions.Version;
 import java.net.URL;
 import java.util.Date;

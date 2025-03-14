@@ -1,3 +1,11 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.gson.TypeAdapter
+ *  com.google.gson.stream.JsonReader
+ *  com.google.gson.stream.JsonWriter
+ */
 package com.mojang.util;
 
 import com.google.gson.TypeAdapter;
@@ -8,12 +16,10 @@ import java.util.UUID;
 
 public class UUIDTypeAdapter
 extends TypeAdapter<UUID> {
-    @Override
     public void write(JsonWriter out, UUID value) throws IOException {
         out.value(UUIDTypeAdapter.fromUUID(value));
     }
 
-    @Override
     public UUID read(JsonReader in) throws IOException {
         return UUIDTypeAdapter.fromString(in.nextString());
     }

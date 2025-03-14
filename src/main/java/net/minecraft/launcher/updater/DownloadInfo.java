@@ -1,3 +1,6 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
 package net.minecraft.launcher.updater;
 
 import java.net.URL;

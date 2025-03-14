@@ -1,7 +1,12 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.base.Objects
+ */
 package net.minecraft.launcher;
 
 import com.google.common.base.Objects;
-import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.UserAuthentication;
 import net.minecraft.launcher.CompatibilityRule;
 import net.minecraft.launcher.profile.Profile;
@@ -22,10 +27,10 @@ implements CompatibilityRule.FeatureMatcher {
     @Override
     public boolean hasFeature(String name, Object value) {
         if (name.equals("is_demo_user")) {
-            return Objects.equal(this.auth.getSelectedProfile() == null, value);
+            return Objects.equal((Object)(this.auth.getSelectedProfile() == null ? 1 : 0), (Object)value);
         }
         if (name.equals("has_custom_resolution")) {
-            return Objects.equal(this.profile.getResolution() != null, value);
+            return Objects.equal((Object)(this.profile.getResolution() != null ? 1 : 0), (Object)value);
         }
         return false;
     }

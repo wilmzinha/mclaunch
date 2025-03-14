@@ -1,7 +1,9 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
 package com.mojang.authlib.yggdrasil.request;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication;
 
 public class RefreshRequest {

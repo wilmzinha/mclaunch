@@ -1,8 +1,14 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  org.apache.commons.io.Charsets
+ *  org.apache.commons.io.IOUtils
+ */
 package com.mojang.launcher.updater.download;
 
 import com.mojang.launcher.updater.download.Downloadable;
 import com.mojang.launcher.updater.download.MonitoringInputStream;
-import com.mojang.launcher.updater.download.ProgressContainer;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,11 +34,11 @@ extends Downloadable {
      */
     @Override
     public String download() throws IOException {
+        InputStream inputStream;
+        int status;
         HttpURLConnection connection;
         File target;
-        int status;
-        InputStream inputStream;
-        block19 : {
+        block19: {
             ++this.numAttempts;
             this.ensureFileWritable(this.getTarget());
             target = this.getTarget();
@@ -46,7 +52,7 @@ extends Downloadable {
                     if (status / 100 == 2) {
                         inputStream = connection.getInputStream();
                         try {
-                            this.expectedHash = IOUtils.toString(inputStream, Charsets.UTF_8).trim();
+                            this.expectedHash = IOUtils.toString((InputStream)inputStream, (Charset)Charsets.UTF_8).trim();
                             break block19;
                         }
                         catch (IOException e) {
@@ -54,7 +60,7 @@ extends Downloadable {
                             break block19;
                         }
                         finally {
-                            IOUtils.closeQuietly(inputStream);
+                            IOUtils.closeQuietly((InputStream)inputStream);
                         }
                     }
                     this.expectedHash = "";

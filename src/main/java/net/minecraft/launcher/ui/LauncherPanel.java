@@ -1,3 +1,9 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  org.apache.commons.lang3.SystemUtils
+ */
 package net.minecraft.launcher.ui;
 
 import com.mojang.launcher.OperatingSystem;
@@ -5,12 +11,9 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.GridBagLayout;
-import java.awt.LayoutManager;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.net.URI;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -20,10 +23,10 @@ import net.minecraft.launcher.LauncherConstants;
 import net.minecraft.launcher.ui.BottomBarPanel;
 import net.minecraft.launcher.ui.TexturedPanel;
 import net.minecraft.launcher.ui.tabs.LauncherTabPanel;
-import net.minecraft.launcher.ui.tabs.WebsiteTab;
 import org.apache.commons.lang3.SystemUtils;
 
-public class LauncherPanel extends JPanel {
+public class LauncherPanel
+extends JPanel {
     public static final String CARD_DIRT_BACKGROUND = "loading";
     public static final String CARD_LOGIN = "login";
     public static final String CARD_LAUNCHER = "launcher";
@@ -53,13 +56,13 @@ public class LauncherPanel extends JPanel {
     }
 
     protected JPanel createLauncherInterface() {
-        String ver;
         String[] split;
-        boolean upgradableOS;
+        String ver;
         JPanel result = new JPanel(new BorderLayout());
-        this.tabPanel.getBlog().setPage(LauncherConstants.URL_WEBSITE);
+        this.tabPanel.getBlog().setPage("http://mcupdate.tumblr.com/");
         boolean javaBootstrap = this.getMinecraftLauncher().getBootstrapVersion() < 100;
-        boolean bl = upgradableOS = OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS;
+        boolean upgradableOS = OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS;
+        boolean bl = upgradableOS;
         if (OperatingSystem.getCurrentPlatform() == OperatingSystem.OSX && (ver = SystemUtils.OS_VERSION) != null && !ver.isEmpty() && (split = ver.split("\\.", 3)).length >= 2) {
             try {
                 int major = Integer.parseInt(split[0]);
@@ -75,10 +78,11 @@ public class LauncherPanel extends JPanel {
             }
         }
         if (javaBootstrap && upgradableOS) {
+            URI url;
             this.warningLabel = new JLabel();
             this.warningLabel.setForeground(Color.RED);
             this.warningLabel.setHorizontalAlignment(0);
-            final URI url = OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS ? LauncherConstants.URL_UPGRADE_WINDOWS : LauncherConstants.URL_UPGRADE_OSX;
+            URI uRI = url = OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS ? LauncherConstants.URL_UPGRADE_WINDOWS : LauncherConstants.URL_UPGRADE_OSX;
             if (SystemUtils.IS_JAVA_1_8) {
                 if (OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
                     this.warningLabel.setText("<html><p style='font-size: 1.1em'>You are running an old version of the launcher. Please consider <a href='" + url + "'>using the new launcher</a> which will improve the performance of both launcher and game.</p></html>");
@@ -144,6 +148,5 @@ public class LauncherPanel extends JPanel {
         }
         this.cardLayout.show(this, card);
     }
-
 }
 

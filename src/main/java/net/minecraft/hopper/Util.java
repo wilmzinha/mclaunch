@@ -1,14 +1,18 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  org.apache.commons.io.IOUtils
+ */
 package net.minecraft.hopper;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.charset.Charset;
 import org.apache.commons.io.IOUtils;
 
@@ -34,15 +38,12 @@ public class Util {
             stream = connection.getInputStream();
         }
         catch (IOException e) {
-            if (returnErrorPage) {
-                stream = connection.getErrorStream();
-                if (stream == null) {
-                    throw e;
-                }
+            if (returnErrorPage && (stream = connection.getErrorStream()) == null) {
+                throw e;
             }
             throw e;
         }
-        return IOUtils.toString(stream);
+        return IOUtils.toString((InputStream)stream);
     }
 
     public static URL constantURL(String input) {

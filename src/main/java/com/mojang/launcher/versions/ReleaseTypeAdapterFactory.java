@@ -1,3 +1,11 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.gson.TypeAdapter
+ *  com.google.gson.stream.JsonReader
+ *  com.google.gson.stream.JsonWriter
+ */
 package com.mojang.launcher.versions;
 
 import com.google.gson.TypeAdapter;
@@ -15,12 +23,10 @@ extends TypeAdapter<T> {
         this.factory = factory;
     }
 
-    @Override
     public void write(JsonWriter out, T value) throws IOException {
         out.value(value.getName());
     }
 
-    @Override
     public T read(JsonReader in) throws IOException {
         return this.factory.getTypeByName(in.nextString());
     }

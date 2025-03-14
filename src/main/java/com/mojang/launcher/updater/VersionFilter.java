@@ -1,3 +1,10 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.collect.Iterables
+ *  com.google.common.collect.Sets
+ */
 package com.mojang.launcher.updater;
 
 import com.google.common.collect.Iterables;
@@ -19,20 +26,20 @@ public class VersionFilter<T extends ReleaseType> {
         return this.types;
     }
 
-    public /* varargs */ VersionFilter<T> onlyForTypes(T ... types) {
+    public VersionFilter<T> onlyForTypes(T ... types) {
         this.types.clear();
         this.includeTypes(types);
         return this;
     }
 
-    public /* varargs */ VersionFilter<T> includeTypes(T ... types) {
+    public VersionFilter<T> includeTypes(T ... types) {
         if (types != null) {
             Collections.addAll(this.types, types);
         }
         return this;
     }
 
-    public /* varargs */ VersionFilter<T> excludeTypes(T ... types) {
+    public VersionFilter<T> excludeTypes(T ... types) {
         if (types != null) {
             for (T type : types) {
                 this.types.remove(type);

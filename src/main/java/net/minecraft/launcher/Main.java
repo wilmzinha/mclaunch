@@ -1,16 +1,24 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  joptsimple.ArgumentAcceptingOptionSpec
+ *  joptsimple.NonOptionArgumentSpec
+ *  joptsimple.OptionParser
+ *  joptsimple.OptionSet
+ *  joptsimple.OptionSpec
+ *  org.apache.logging.log4j.LogManager
+ *  org.apache.logging.log4j.Logger
+ */
 package net.minecraft.launcher;
 
 import com.mojang.launcher.OperatingSystem;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
-import java.net.PasswordAuthentication;
 import java.net.Proxy;
-import java.net.SocketAddress;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -19,7 +27,6 @@ import joptsimple.NonOptionArgumentSpec;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
-import joptsimple.OptionSpecBuilder;
 import net.minecraft.launcher.Launcher;
 import net.minecraft.launcher.LauncherConstants;
 import org.apache.logging.log4j.LogManager;
@@ -47,12 +54,13 @@ public class Main {
         Proxy proxy = Proxy.NO_PROXY;
         if (hostName != null) {
             try {
-                proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(hostName, (int)optionSet.valueOf(proxyPortOption)));
-            } catch (Exception exception) {
+                proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(hostName, (int)((Integer)optionSet.valueOf((OptionSpec)proxyPortOption))));
+            }
+            catch (Exception exception) {
                 // empty catch block
             }
         }
-        File workingDirectory = optionSet.valueOf(workDirOption);
+        File workingDirectory = (File)optionSet.valueOf((OptionSpec)workDirOption);
         workingDirectory.mkdirs();
         LOGGER.debug("About to create JFrame.");
         Proxy finalProxy = proxy;
@@ -64,7 +72,8 @@ public class Main {
             if (in != null) {
                 frame.setIconImage(ImageIO.read(in));
             }
-        } catch (IOException in) {
+        }
+        catch (IOException in) {
             // empty catch block
         }
         frame.pack();
@@ -88,25 +97,24 @@ public class Main {
         String userHome = System.getProperty("user.home", ".");
         switch (OperatingSystem.getCurrentPlatform()) {
             case LINUX: {
-                workingDirectory = new File(userHome, ".mclaunch/");
+                workingDirectory = new File(userHome, ".minecraft/");
                 break;
             }
             case WINDOWS: {
                 String applicationData = System.getenv("APPDATA");
                 String folder = applicationData != null ? applicationData : userHome;
-                workingDirectory = new File(folder, ".mclaunch/");
+                workingDirectory = new File(folder, ".minecraft/");
                 break;
             }
             case OSX: {
-                workingDirectory = new File(userHome, "Library/Application Support/mclaunch");
+                workingDirectory = new File(userHome, "Library/Application Support/minecraft");
                 break;
             }
             default: {
-                workingDirectory = new File(userHome, "mclaunch/");
+                workingDirectory = new File(userHome, "minecraft/");
             }
         }
         return workingDirectory;
     }
-
 }
 

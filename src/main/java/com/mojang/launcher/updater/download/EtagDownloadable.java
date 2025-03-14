@@ -1,12 +1,13 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
 package com.mojang.launcher.updater.download;
 
 import com.mojang.launcher.updater.download.Downloadable;
 import com.mojang.launcher.updater.download.MonitoringInputStream;
-import com.mojang.launcher.updater.download.ProgressContainer;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;

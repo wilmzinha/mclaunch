@@ -1,24 +1,25 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.base.Objects
+ *  org.apache.logging.log4j.LogManager
+ *  org.apache.logging.log4j.Logger
+ */
 package net.minecraft.launcher.ui.popups.login;
 
 import com.google.common.base.Objects;
-import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.exceptions.AuthenticationException;
-import com.mojang.launcher.updater.VersionManager;
 import com.mojang.util.UUIDTypeAdapter;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.UUID;
-import java.util.concurrent.ThreadPoolExecutor;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -26,10 +27,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
-import net.minecraft.launcher.Launcher;
 import net.minecraft.launcher.profile.AuthenticationDatabase;
 import net.minecraft.launcher.profile.ProfileManager;
-import net.minecraft.launcher.ui.popups.login.AuthErrorForm;
 import net.minecraft.launcher.ui.popups.login.LogInPopup;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -58,7 +57,7 @@ implements ActionListener {
     private void fillUsers() {
         for (String user : this.authDatabase.getKnownNames()) {
             this.userDropdown.addItem(user);
-            if (this.profileManager.getSelectedUser() == null || !Objects.equal(this.authDatabase.getByUUID(this.profileManager.getSelectedUser()), this.authDatabase.getByName(user))) continue;
+            if (this.profileManager.getSelectedUser() == null || !Objects.equal((Object)this.authDatabase.getByUUID(this.profileManager.getSelectedUser()), (Object)this.authDatabase.getByName(user))) continue;
             this.userDropdown.setSelectedItem(user);
         }
     }
@@ -102,44 +101,41 @@ implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        String uuid;
+        UserAuthentication auth;
         final Object selected = this.userDropdown.getSelectedItem();
-        final UserAuthentication auth;
-        final String uuid;
         if (selected != null && selected instanceof String) {
-            auth = this.authDatabase.getByName((String) selected);
-            if (auth.getSelectedProfile() == null) {
-                uuid = "demo-" + auth.getUserID();
-            } else {
-                uuid = UUIDTypeAdapter.fromUUID(auth.getSelectedProfile().getId());
-            }
+            auth = this.authDatabase.getByName((String)selected);
+            uuid = auth.getSelectedProfile() == null ? "demo-" + auth.getUserID() : UUIDTypeAdapter.fromUUID(auth.getSelectedProfile().getId());
         } else {
             auth = null;
             uuid = null;
         }
         if (e.getSource() == this.playButton) {
             this.popup.setCanLogIn(false);
-            this.popup.getMinecraftLauncher().getLauncher().getVersionManager().getExecutorService().execute(
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            if (auth != null && uuid != null) {
-                                try {
-                                    if (!auth.canPlayOnline()) {
-                                        auth.logIn();
-                                    }
-                                    ExistingUserListForm.this.popup.setLoggedIn(uuid);
-                                } catch (AuthenticationException ex) {
-                                    ExistingUserListForm.this.popup.getErrorForm().displayError(ex,"We couldn't log you back in as " + selected + ".", "Please try to log in again.");
-                                    ExistingUserListForm.this.removeUser((String) selected, uuid);
-                                    ExistingUserListForm.this.popup.setCanLogIn(true);
-                                }
-                            } else {
-                                ExistingUserListForm.this.popup.setCanLogIn(true);
+            this.popup.getMinecraftLauncher().getLauncher().getVersionManager().getExecutorService().execute(new Runnable(){
+
+                @Override
+                public void run() {
+                    if (auth != null && uuid != null) {
+                        try {
+                            if (!auth.canPlayOnline()) {
+                                auth.logIn();
                             }
+                            ExistingUserListForm.this.popup.setLoggedIn(uuid);
                         }
-                    });
+                        catch (AuthenticationException ex) {
+                            ExistingUserListForm.this.popup.getErrorForm().displayError(ex, "We couldn't log you back in as " + selected + ".", "Please try to log in again.");
+                            ExistingUserListForm.this.removeUser((String)selected, uuid);
+                            ExistingUserListForm.this.popup.setCanLogIn(true);
+                        }
+                    } else {
+                        ExistingUserListForm.this.popup.setCanLogIn(true);
+                    }
+                }
+            });
         } else if (e.getSource() == this.logOutButton) {
-            this.removeUser((String) selected, uuid);
+            this.removeUser((String)selected, uuid);
         }
     }
 
@@ -166,6 +162,5 @@ implements ActionListener {
             }
         }
     }
-
 }
 

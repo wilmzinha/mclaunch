@@ -1,3 +1,6 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
 package net.minecraft.launcher.ui.popups.profile;
 
 import com.mojang.launcher.OperatingSystem;
@@ -5,18 +8,14 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.LayoutManager;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.Document;
-import net.minecraft.launcher.profile.Profile;
 import net.minecraft.launcher.ui.popups.profile.ProfileEditorPopup;
 
 public class ProfileJavaPanel
@@ -164,6 +163,5 @@ extends JPanel {
             this.editor.getProfile().setJavaArgs(null);
         }
     }
-
 }
 

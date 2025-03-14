@@ -1,8 +1,14 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  org.apache.logging.log4j.LogManager
+ *  org.apache.logging.log4j.Logger
+ */
 package com.mojang.launcher;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.URI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,12 +18,12 @@ public enum OperatingSystem {
     WINDOWS("windows", "win"),
     OSX("osx", "mac"),
     UNKNOWN("unknown", new String[0]);
-    
+
     private static final Logger LOGGER;
     private final String name;
     private final String[] aliases;
 
-    private /* varargs */ OperatingSystem(String name, String ... aliases) {
+    private OperatingSystem(String name, String ... aliases) {
         this.name = name;
         this.aliases = aliases == null ? new String[]{} : aliases;
     }

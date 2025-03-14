@@ -1,25 +1,27 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.collect.Lists
+ *  org.apache.logging.log4j.LogManager
+ *  org.apache.logging.log4j.Logger
+ */
 package com.mojang.launcher.game.runner;
 
 import com.google.common.collect.Lists;
 import com.mojang.launcher.Launcher;
-import com.mojang.launcher.UserInterface;
 import com.mojang.launcher.game.GameInstanceStatus;
 import com.mojang.launcher.game.runner.GameRunner;
 import com.mojang.launcher.game.runner.GameRunnerListener;
 import com.mojang.launcher.updater.DownloadProgress;
-import com.mojang.launcher.updater.VersionManager;
 import com.mojang.launcher.updater.VersionSyncInfo;
 import com.mojang.launcher.updater.download.DownloadJob;
 import com.mojang.launcher.updater.download.DownloadListener;
 import com.mojang.launcher.updater.download.Downloadable;
-import com.mojang.launcher.updater.download.ProgressContainer;
 import com.mojang.launcher.versions.CompleteVersion;
-import com.mojang.launcher.versions.Version;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadPoolExecutor;
-import org.apache.commons.lang3.time.StopWatch;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,8 +39,9 @@ DownloadListener {
      * WARNING - Removed try catching itself - possible behaviour change.
      */
     protected void setStatus(GameInstanceStatus status) {
-        Object object = this.lock;
-        synchronized (object) {
+        Object object;
+        Object object2 = object = this.lock;
+        synchronized (object2) {
             this.status = status;
             for (GameRunnerListener listener : Lists.newArrayList(this.listeners)) {
                 listener.onGameInstanceChangedState(this, status);
@@ -58,8 +61,9 @@ DownloadListener {
      */
     @Override
     public void playGame(VersionSyncInfo syncInfo) {
-        Object object = this.lock;
-        synchronized (object) {
+        Object object;
+        Object object2 = object = this.lock;
+        synchronized (object2) {
             if (this.getStatus() != GameInstanceStatus.IDLE) {
                 LOGGER.warn("Tried to play game but game is already starting!");
                 return;
@@ -72,8 +76,8 @@ DownloadListener {
             this.setStatus(GameInstanceStatus.IDLE);
             return;
         }
-        object = this.lock;
-        synchronized (object) {
+        object2 = object = this.lock;
+        synchronized (object2) {
             LOGGER.info("Queueing library & version downloads");
             try {
                 this.version = this.getLauncher().getVersionManager().getLatestCompleteVersion(syncInfo);
@@ -144,8 +148,9 @@ DownloadListener {
      * WARNING - Removed try catching itself - possible behaviour change.
      */
     protected void updateProgressBar() {
-        Object object = this.lock;
-        synchronized (object) {
+        Object object;
+        Object object2 = object = this.lock;
+        synchronized (object2) {
             if (this.hasRemainingJobs()) {
                 long total = 0L;
                 long current = 0L;
@@ -171,8 +176,9 @@ DownloadListener {
      */
     @Override
     public boolean hasRemainingJobs() {
-        Object object = this.lock;
-        synchronized (object) {
+        Object object;
+        Object object2 = object = this.lock;
+        synchronized (object2) {
             for (DownloadJob job : this.jobs) {
                 if (job.isComplete()) continue;
                 return true;
@@ -186,8 +192,9 @@ DownloadListener {
      */
     @Override
     public void addJob(DownloadJob job) {
-        Object object = this.lock;
-        synchronized (object) {
+        Object object;
+        Object object2 = object = this.lock;
+        synchronized (object2) {
             this.jobs.add(job);
         }
     }
@@ -197,9 +204,10 @@ DownloadListener {
      */
     @Override
     public void onDownloadJobFinished(DownloadJob job) {
+        Object object;
         this.updateProgressBar();
-        Object object = this.lock;
-        synchronized (object) {
+        Object object2 = object = this.lock;
+        synchronized (object2) {
             if (job.getFailures() > 0) {
                 LOGGER.error("Job '" + job.getName() + "' finished with " + job.getFailures() + " failure(s)! (took " + job.getStopWatch().toString() + ")");
                 this.setStatus(GameInstanceStatus.IDLE);
@@ -229,8 +237,9 @@ DownloadListener {
      * WARNING - Removed try catching itself - possible behaviour change.
      */
     public void addListener(GameRunnerListener listener) {
-        Object object = this.lock;
-        synchronized (object) {
+        Object object;
+        Object object2 = object = this.lock;
+        synchronized (object2) {
             this.listeners.add(listener);
         }
     }

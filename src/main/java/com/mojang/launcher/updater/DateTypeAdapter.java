@@ -1,3 +1,16 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.gson.JsonDeserializationContext
+ *  com.google.gson.JsonDeserializer
+ *  com.google.gson.JsonElement
+ *  com.google.gson.JsonParseException
+ *  com.google.gson.JsonPrimitive
+ *  com.google.gson.JsonSerializationContext
+ *  com.google.gson.JsonSerializer
+ *  com.google.gson.JsonSyntaxException
+ */
 package com.mojang.launcher.updater;
 
 import com.google.gson.JsonDeserializationContext;
@@ -21,7 +34,6 @@ JsonDeserializer<Date> {
     private final DateFormat enUsFormat = DateFormat.getDateTimeInstance(2, 2, Locale.US);
     private final DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 
-    @Override
     public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         if (!(json instanceof JsonPrimitive)) {
             throw new JsonParseException("The date should be a string value");
@@ -36,17 +48,18 @@ JsonDeserializer<Date> {
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
-    @Override
     public JsonElement serialize(Date src, Type typeOfSrc, JsonSerializationContext context) {
-        DateFormat dateFormat = this.enUsFormat;
-        synchronized (dateFormat) {
+        DateFormat dateFormat;
+        DateFormat dateFormat2 = dateFormat = this.enUsFormat;
+        synchronized (dateFormat2) {
             return new JsonPrimitive(this.serializeToString(src));
         }
     }
 
     public Date deserializeToDate(String string) {
-        DateFormat dateFormat = this.enUsFormat;
-        synchronized (dateFormat) {
+        DateFormat dateFormat;
+        DateFormat dateFormat2 = dateFormat = this.enUsFormat;
+        synchronized (dateFormat2) {
             try {
                 return this.enUsFormat.parse(string);
             }
@@ -61,7 +74,7 @@ JsonDeserializer<Date> {
                         return this.iso8601Format.parse(cleaned);
                     }
                     catch (Exception e) {
-                        throw new JsonSyntaxException("Invalid date: " + string, e);
+                        throw new JsonSyntaxException("Invalid date: " + string, (Throwable)e);
                     }
                 }
             }
@@ -72,8 +85,9 @@ JsonDeserializer<Date> {
      * WARNING - Removed try catching itself - possible behaviour change.
      */
     public String serializeToString(Date date) {
-        DateFormat dateFormat = this.enUsFormat;
-        synchronized (dateFormat) {
+        DateFormat dateFormat;
+        DateFormat dateFormat2 = dateFormat = this.enUsFormat;
+        synchronized (dateFormat2) {
             String result = this.iso8601Format.format(date);
             return result.substring(0, 22) + ":" + result.substring(22);
         }

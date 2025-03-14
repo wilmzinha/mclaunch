@@ -1,40 +1,35 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
 package net.minecraft.launcher.ui.popups.login;
 
 import com.mojang.launcher.OperatingSystem;
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.LayoutManager;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.util.Collection;
 import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import net.minecraft.launcher.Launcher;
 import net.minecraft.launcher.LauncherConstants;
-import net.minecraft.launcher.profile.AuthenticationDatabase;
-import net.minecraft.launcher.profile.ProfileManager;
 import net.minecraft.launcher.ui.popups.login.AuthErrorForm;
 import net.minecraft.launcher.ui.popups.login.ExistingUserListForm;
 import net.minecraft.launcher.ui.popups.login.LogInForm;
 
-public class LogInPopup extends JPanel implements ActionListener {
+public class LogInPopup
+extends JPanel
+implements ActionListener {
     private final Launcher minecraftLauncher;
     private final Callback callback;
     private final AuthErrorForm errorForm;
@@ -146,6 +141,5 @@ public class LogInPopup extends JPanel implements ActionListener {
     public static interface Callback {
         public void onLogIn(String var1);
     }
-
 }
 
