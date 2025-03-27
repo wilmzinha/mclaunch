@@ -1,3 +1,13 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.gson.JsonDeserializationContext
+ *  com.google.gson.JsonDeserializer
+ *  com.google.gson.JsonElement
+ *  com.google.gson.JsonObject
+ *  com.google.gson.JsonParseException
+ */
 package com.mojang.authlib.yggdrasil.response;
 
 import com.google.gson.JsonDeserializationContext;
@@ -5,7 +15,6 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.yggdrasil.response.Response;
 import java.lang.reflect.Type;
@@ -18,9 +27,13 @@ extends Response {
         return this.profiles;
     }
 
+    static /* synthetic */ GameProfile[] access$002(ProfileSearchResultsResponse x0, GameProfile[] x1) {
+        x0.profiles = x1;
+        return x1;
+    }
+
     public static class Serializer
     implements JsonDeserializer<ProfileSearchResultsResponse> {
-        @Override
         public ProfileSearchResultsResponse deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             ProfileSearchResultsResponse result = new ProfileSearchResultsResponse();
             if (json instanceof JsonObject) {
@@ -35,11 +48,10 @@ extends Response {
                     result.setError(object.getAsJsonPrimitive("cause").getAsString());
                 }
             } else {
-                result.profiles = (GameProfile[])context.deserialize(json, (Type)((Object)GameProfile[].class));
+                ProfileSearchResultsResponse.access$002(result, (GameProfile[])context.deserialize(json, (Type)((Object)GameProfile[].class)));
             }
             return result;
         }
     }
-
 }
 

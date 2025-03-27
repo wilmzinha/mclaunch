@@ -1,3 +1,6 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
 package com.mojang.launcher.versions;
 
 import java.util.ArrayList;
@@ -10,7 +13,7 @@ public class ExtractRules {
     public ExtractRules() {
     }
 
-    public /* varargs */ ExtractRules(String ... exclude) {
+    public ExtractRules(String ... exclude) {
         if (exclude != null) {
             Collections.addAll(this.exclude, exclude);
         }

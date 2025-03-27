@@ -1,3 +1,6 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
 package com.mojang.launcher.game;
 
 public enum GameInstanceStatus {
@@ -7,7 +10,7 @@ public enum GameInstanceStatus {
     LAUNCHING("Launching..."),
     PLAYING("Playing..."),
     IDLE("Idle");
-    
+
     private final String name;
 
     private GameInstanceStatus(String name) {

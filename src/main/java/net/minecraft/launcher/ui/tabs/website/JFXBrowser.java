@@ -1,13 +1,10 @@
 /*
- * Decompiled with CFR 0_132.
+ * Decompiled with CFR 0.152.
  * 
  * Could not load the following classes:
  *  javafx.application.Platform
- *  javafx.beans.property.ReadOnlyObjectProperty
  *  javafx.beans.value.ChangeListener
  *  javafx.beans.value.ObservableValue
- *  javafx.collections.ObservableList
- *  javafx.concurrent.Worker
  *  javafx.concurrent.Worker$State
  *  javafx.embed.swing.JFXPanel
  *  javafx.scene.Group
@@ -15,18 +12,16 @@
  *  javafx.scene.Scene
  *  javafx.scene.web.WebEngine
  *  javafx.scene.web.WebView
+ *  org.apache.logging.log4j.LogManager
+ *  org.apache.logging.log4j.Logger
  */
 package net.minecraft.launcher.ui.tabs.website;
 
-import com.mojang.launcher.OperatingSystem;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.net.URI;
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Worker;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Group;
@@ -35,11 +30,9 @@ import javafx.scene.Scene;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import net.minecraft.launcher.ui.tabs.website.Browser;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.events.Event;
@@ -64,11 +57,12 @@ implements Browser {
              */
             @Override
             public void run() {
+                Object object;
                 Group root = new Group();
                 Scene scene = new Scene((Parent)root);
                 JFXBrowser.this.fxPanel.setScene(scene);
-                Object object = JFXBrowser.this.lock;
-                synchronized (object) {
+                Object object2 = object = JFXBrowser.this.lock;
+                synchronized (object2) {
                     JFXBrowser.this.browser = new WebView();
                     JFXBrowser.this.browser.setContextMenuEnabled(false);
                     if (JFXBrowser.this.size != null) {
@@ -76,39 +70,23 @@ implements Browser {
                     }
                     JFXBrowser.this.webEngine = JFXBrowser.this.browser.getEngine();
                     JFXBrowser.this.webEngine.setJavaScriptEnabled(false);
-                    JFXBrowser.this.webEngine.getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
-                        public void changed(final ObservableValue<? extends Worker.State> observableValue,
-                                            final Worker.State oldState, final Worker.State newState) {
+                    JFXBrowser.this.webEngine.getLoadWorker().stateProperty().addListener((ChangeListener)new ChangeListener<Worker.State>(){
+
+                        public void changed(ObservableValue<? extends Worker.State> observableValue, Worker.State oldState, Worker.State newState) {
                             if (newState == Worker.State.SUCCEEDED) {
-                                final EventListener listener = new EventListener() {
+                                EventListener listener = new EventListener(){
+
                                     @Override
-                                    public void handleEvent(final Event event) {
-                                        if (event.getTarget() instanceof Element) {
-                                            Element element;
-                                            String href;
-                                            for (element = (Element) event.getTarget(), href = element.getAttribute("href"); StringUtils.isEmpty(href) && element.getParentNode() instanceof Element;
-                                                 element = (Element) element.getParentNode(), href = element.getAttribute("href")) {
-                                            }
-                                            if (href != null && href.length() > 0) {
-                                                try {
-                                                    OperatingSystem.openLink(new URI(href));
-                                                } catch (Exception e) {
-                                                    JFXBrowser.LOGGER.error("Unexpected exception opening link " + href, e);
-                                                }
-                                                event.preventDefault();
-                                                event.stopPropagation();
-                                            }
-                                        }
+                                    public void handleEvent(Event event) {
                                     }
                                 };
-                                final Document doc = JFXBrowser.this.webEngine.getDocument();
+                                Document doc = JFXBrowser.this.webEngine.getDocument();
                                 if (doc != null) {
-                                    final NodeList elements = doc.getElementsByTagName("a");
+                                    NodeList elements = doc.getElementsByTagName("a");
                                     for (int i = 0; i < elements.getLength(); ++i) {
-                                        final Node item = elements.item(i);
-                                        if (item instanceof EventTarget) {
-                                            ((EventTarget) item).addEventListener("click", listener, false);
-                                        }
+                                        Node item = elements.item(i);
+                                        if (!(item instanceof EventTarget)) continue;
+                                        ((EventTarget)((Object)item)).addEventListener("click", listener, false);
                                     }
                                 }
                             }
@@ -120,7 +98,6 @@ implements Browser {
                 }
                 root.getChildren().add(JFXBrowser.this.browser);
             }
-
         });
     }
 
@@ -129,8 +106,9 @@ implements Browser {
      */
     @Override
     public void loadUrl(final String url) {
-        Object object = this.lock;
-        synchronized (object) {
+        Object object;
+        Object object2 = object = this.lock;
+        synchronized (object2) {
             this.urlToBrowseTo = url;
             if (this.webEngine != null) {
                 Platform.runLater((Runnable)new Runnable(){
@@ -154,8 +132,9 @@ implements Browser {
      */
     @Override
     public void resize(Dimension size) {
-        Object object = this.lock;
-        synchronized (object) {
+        Object object;
+        Object object2 = object = this.lock;
+        synchronized (object2) {
             this.size = size;
             if (this.browser != null) {
                 this.browser.setMinSize(size.getWidth(), size.getHeight());
@@ -164,6 +143,5 @@ implements Browser {
             }
         }
     }
-
 }
 

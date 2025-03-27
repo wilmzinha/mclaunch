@@ -1,3 +1,11 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  org.apache.commons.io.IOUtils
+ *  org.apache.logging.log4j.LogManager
+ *  org.apache.logging.log4j.Logger
+ */
 package com.mojang.launcher;
 
 import java.io.IOException;
@@ -6,10 +14,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.Map;
-import java.util.Set;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,11 +60,12 @@ public class Http {
         connection.setRequestMethod("GET");
         InputStream inputStream = connection.getInputStream();
         try {
-            String string = IOUtils.toString(inputStream);
-            return string;
+            String string;
+            String string2 = string = IOUtils.toString((InputStream)inputStream);
+            return string2;
         }
         finally {
-            IOUtils.closeQuietly(inputStream);
+            IOUtils.closeQuietly((InputStream)inputStream);
         }
     }
 }

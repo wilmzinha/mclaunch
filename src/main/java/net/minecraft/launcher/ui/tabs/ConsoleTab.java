@@ -1,15 +1,12 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
 package net.minecraft.launcher.ui.tabs;
 
 import com.mojang.util.QueueLogAppender;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Insets;
 import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JMenuItem;
@@ -17,9 +14,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
-import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import net.minecraft.launcher.Launcher;
@@ -37,12 +32,14 @@ extends JScrollPane {
         this.popupMenu.add(this.copyTextButton);
         this.console.setComponentPopupMenu(this.popupMenu);
         this.copyTextButton.addActionListener(new ActionListener(){
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     StringSelection ss = new StringSelection(ConsoleTab.this.console.getText());
                     Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, null);
-                } catch (Exception ss) {
+                }
+                catch (Exception exception) {
                     // empty catch block
                 }
             }
@@ -51,7 +48,8 @@ extends JScrollPane {
         this.console.setEditable(false);
         this.console.setMargin(null);
         this.setViewportView(this.console);
-        Thread thread = new Thread(new Runnable() {
+        Thread thread = new Thread(new Runnable(){
+
             @Override
             public void run() {
                 String line;
@@ -71,6 +69,7 @@ extends JScrollPane {
     public void print(final String line) {
         if (!SwingUtilities.isEventDispatchThread()) {
             SwingUtilities.invokeLater(new Runnable(){
+
                 @Override
                 public void run() {
                     ConsoleTab.this.print(line);
@@ -94,6 +93,5 @@ extends JScrollPane {
             scrollBar.setValue(Integer.MAX_VALUE);
         }
     }
-
 }
 

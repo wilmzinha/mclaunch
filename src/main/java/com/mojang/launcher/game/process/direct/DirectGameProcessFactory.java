@@ -1,12 +1,12 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
 package com.mojang.launcher.game.process.direct;
 
-import com.google.common.base.Predicate;
-import com.mojang.launcher.events.GameOutputLogProcessor;
 import com.mojang.launcher.game.process.GameProcess;
 import com.mojang.launcher.game.process.GameProcessBuilder;
 import com.mojang.launcher.game.process.GameProcessFactory;
 import com.mojang.launcher.game.process.direct.DirectGameProcess;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 

@@ -1,8 +1,10 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
 package net.minecraft.launcher.updater;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 import net.minecraft.launcher.updater.DownloadInfo;
 
 public class LibraryDownloadInfo {

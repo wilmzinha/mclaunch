@@ -1,3 +1,13 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  org.apache.commons.io.Charsets
+ *  org.apache.commons.io.IOUtils
+ *  org.apache.commons.lang3.Validate
+ *  org.apache.logging.log4j.LogManager
+ *  org.apache.logging.log4j.Logger
+ */
 package com.mojang.authlib;
 
 import com.mojang.authlib.BaseAuthenticationService;
@@ -9,11 +19,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.Map;
-import java.util.Set;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
@@ -26,7 +34,7 @@ extends BaseAuthenticationService {
     private final Proxy proxy;
 
     protected HttpAuthenticationService(Proxy proxy) {
-        Validate.notNull(proxy);
+        Validate.notNull((Object)proxy);
         this.proxy = proxy;
     }
 
@@ -35,7 +43,7 @@ extends BaseAuthenticationService {
     }
 
     protected HttpURLConnection createUrlConnection(URL url) throws IOException {
-        Validate.notNull(url);
+        Validate.notNull((Object)url);
         LOGGER.debug("Opening connection to " + url);
         HttpURLConnection connection = (HttpURLConnection)url.openConnection(this.proxy);
         connection.setConnectTimeout(15000);
@@ -48,11 +56,10 @@ extends BaseAuthenticationService {
      * WARNING - Removed try catching itself - possible behaviour change.
      */
     public String performPostRequest(URL url, String post, String contentType) throws IOException {
-        HttpURLConnection connection;
-        Validate.notNull(url);
-        Validate.notNull(post);
-        Validate.notNull(contentType);
-        connection = this.createUrlConnection(url);
+        Validate.notNull((Object)url);
+        Validate.notNull((Object)post);
+        Validate.notNull((Object)contentType);
+        HttpURLConnection connection = this.createUrlConnection(url);
         byte[] postAsBytes = post.getBytes(Charsets.UTF_8);
         connection.setRequestProperty("Content-Type", contentType + "; charset=utf-8");
         connection.setRequestProperty("Content-Length", "" + postAsBytes.length);
@@ -61,69 +68,73 @@ extends BaseAuthenticationService {
         OutputStream outputStream = null;
         try {
             outputStream = connection.getOutputStream();
-            IOUtils.write(postAsBytes, outputStream);
+            IOUtils.write((byte[])postAsBytes, (OutputStream)outputStream);
         }
         finally {
-            IOUtils.closeQuietly(outputStream);
+            IOUtils.closeQuietly((OutputStream)outputStream);
         }
         LOGGER.debug("Reading data from " + url);
         InputStream inputStream = null;
         try {
+            String string;
             inputStream = connection.getInputStream();
-            String result = IOUtils.toString(inputStream, Charsets.UTF_8);
+            String result = IOUtils.toString((InputStream)inputStream, (Charset)Charsets.UTF_8);
             LOGGER.debug("Successful read, server response was " + connection.getResponseCode());
             LOGGER.debug("Response: " + result);
-            String string = result;
-            return string;
+            String string2 = string = result;
+            return string2;
         }
         catch (IOException e) {
-            IOUtils.closeQuietly(inputStream);
+            IOUtils.closeQuietly((InputStream)inputStream);
             inputStream = connection.getErrorStream();
             if (inputStream != null) {
+                String string;
                 LOGGER.debug("Reading error page from " + url);
-                String result = IOUtils.toString(inputStream, Charsets.UTF_8);
+                String result = IOUtils.toString((InputStream)inputStream, (Charset)Charsets.UTF_8);
                 LOGGER.debug("Successful read, server response was " + connection.getResponseCode());
                 LOGGER.debug("Response: " + result);
-                String string = result;
-                return string;
+                String string3 = string = result;
+                return string3;
             }
             LOGGER.debug("Request failed", (Throwable)e);
             throw e;
         }
         finally {
-            IOUtils.closeQuietly(inputStream);
+            IOUtils.closeQuietly((InputStream)inputStream);
         }
     }
 
     public String performGetRequest(URL url) throws IOException {
-        Validate.notNull(url);
+        Validate.notNull((Object)url);
         HttpURLConnection connection = this.createUrlConnection(url);
         LOGGER.debug("Reading data from " + url);
         InputStream inputStream = null;
         try {
+            String string;
             inputStream = connection.getInputStream();
-            String result = IOUtils.toString(inputStream, Charsets.UTF_8);
+            String result = IOUtils.toString((InputStream)inputStream, (Charset)Charsets.UTF_8);
             LOGGER.debug("Successful read, server response was " + connection.getResponseCode());
             LOGGER.debug("Response: " + result);
-            String string = result;
-            return string;
+            String string2 = string = result;
+            return string2;
         }
         catch (IOException e) {
-            IOUtils.closeQuietly(inputStream);
+            IOUtils.closeQuietly((InputStream)inputStream);
             inputStream = connection.getErrorStream();
             if (inputStream != null) {
+                String string;
                 LOGGER.debug("Reading error page from " + url);
-                String result = IOUtils.toString(inputStream, Charsets.UTF_8);
+                String result = IOUtils.toString((InputStream)inputStream, (Charset)Charsets.UTF_8);
                 LOGGER.debug("Successful read, server response was " + connection.getResponseCode());
                 LOGGER.debug("Response: " + result);
-                String string = result;
-                return string;
+                String string3 = string = result;
+                return string3;
             }
             LOGGER.debug("Request failed", (Throwable)e);
             throw e;
         }
         finally {
-            IOUtils.closeQuietly(inputStream);
+            IOUtils.closeQuietly((InputStream)inputStream);
         }
     }
 

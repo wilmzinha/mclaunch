@@ -1,3 +1,10 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  org.apache.commons.lang3.StringUtils
+ *  org.apache.commons.lang3.text.StrSubstitutor
+ */
 package net.minecraft.launcher.updater;
 
 import com.mojang.launcher.OperatingSystem;
@@ -14,7 +21,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import net.minecraft.launcher.CompatibilityRule;
 import net.minecraft.launcher.updater.DownloadInfo;
 import net.minecraft.launcher.updater.LibraryDownloadInfo;
@@ -23,7 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.StrSubstitutor;
 
 public class Library {
-    private static final StrSubstitutor SUBSTITUTOR = new StrSubstitutor(new HashMap<String, String>(){
+    private static final StrSubstitutor SUBSTITUTOR = new StrSubstitutor((Map)new HashMap<String, String>(){
         {
             this.put("arch", System.getProperty("os.arch").contains("64") ? "64" : "32");
         }
@@ -140,10 +146,7 @@ public class Library {
             throw new IllegalStateException("Cannot get artifact filename of empty/blank artifact");
         }
         String[] parts = this.name.split(":", 3);
-        Object[] arrobject = new Object[3];
-        arrobject[0] = parts[1];
-        arrobject[1] = parts[2];
-        arrobject[2] = StringUtils.isEmpty(classifier) ? "" : "-" + classifier;
+        Object[] arrobject = new Object[]{parts[1], parts[2], StringUtils.isEmpty((CharSequence)classifier) ? "" : "-" + classifier};
         String result = String.format("%s-%s%s.jar", arrobject);
         return SUBSTITUTOR.replace(result);
     }
@@ -167,6 +170,5 @@ public class Library {
         }
         return null;
     }
-
 }
 

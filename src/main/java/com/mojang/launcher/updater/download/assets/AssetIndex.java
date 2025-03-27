@@ -1,10 +1,15 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.collect.Maps
+ */
 package com.mojang.launcher.updater.download.assets;
 
 import com.google.common.collect.Maps;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class AssetIndex {
     public static final String DEFAULT_ASSET_NAME = "legacy";
@@ -16,7 +21,7 @@ public class AssetIndex {
     }
 
     public Map<AssetObject, String> getUniqueObjects() {
-        HashMap<AssetObject, String> result = Maps.newHashMap();
+        HashMap result = Maps.newHashMap();
         for (Map.Entry<String, AssetObject> objectEntry : this.objects.entrySet()) {
             result.put(objectEntry.getValue(), objectEntry.getKey());
         }
@@ -78,10 +83,7 @@ public class AssetIndex {
             if (this.compressedHash != null ? !this.compressedHash.equals(that.compressedHash) : that.compressedHash != null) {
                 return false;
             }
-            if (this.hash != null ? !this.hash.equals(that.hash) : that.hash != null) {
-                return false;
-            }
-            return true;
+            return !(this.hash != null ? !this.hash.equals(that.hash) : that.hash != null);
         }
 
         public int hashCode() {
@@ -93,6 +95,5 @@ public class AssetIndex {
             return result;
         }
     }
-
 }
 

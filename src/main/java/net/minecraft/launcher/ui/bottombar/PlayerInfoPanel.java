@@ -1,35 +1,33 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
 package net.minecraft.launcher.ui.bottombar;
 
-import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.UserAuthentication;
 import com.mojang.launcher.events.RefreshedVersionsListener;
-import com.mojang.launcher.updater.VersionFilter;
 import com.mojang.launcher.updater.VersionManager;
 import com.mojang.launcher.updater.VersionSyncInfo;
-import com.mojang.launcher.versions.ReleaseType;
-import com.mojang.launcher.versions.Version;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
-import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import net.minecraft.launcher.Launcher;
-import net.minecraft.launcher.MinecraftUserInterface;
-import net.minecraft.launcher.game.MinecraftReleaseType;
-import net.minecraft.launcher.profile.AuthenticationDatabase;
 import net.minecraft.launcher.profile.Profile;
 import net.minecraft.launcher.profile.ProfileManager;
 import net.minecraft.launcher.profile.RefreshedProfilesListener;
 import net.minecraft.launcher.profile.UserChangedListener;
 
-public class PlayerInfoPanel extends JPanel implements RefreshedVersionsListener, RefreshedProfilesListener, UserChangedListener {
+public class PlayerInfoPanel
+extends JPanel
+implements RefreshedVersionsListener,
+RefreshedProfilesListener,
+UserChangedListener {
     private final Launcher minecraftLauncher;
     private final JLabel welcomeText = new JLabel("", 0);
     private final JLabel versionText = new JLabel("", 0);
@@ -87,21 +85,25 @@ public class PlayerInfoPanel extends JPanel implements RefreshedVersionsListener
     }
 
     public void checkState() {
-        UserAuthentication auth;
-        VersionSyncInfo version;
         VersionSyncInfo requestedVersion;
         ProfileManager profileManager = this.minecraftLauncher.getProfileManager();
-        UserAuthentication userAuthentication = auth = profileManager.getSelectedUser() == null ? null : profileManager.getAuthDatabase().getByUUID(profileManager.getSelectedUser());
+        UserAuthentication auth = profileManager.getSelectedUser() == null ? null : profileManager.getAuthDatabase().getByUUID(profileManager.getSelectedUser());
+        UserAuthentication userAuthentication = auth;
         if (auth == null || !auth.isLoggedIn()) {
             this.welcomeText.setText("Welcome, guest! Please log in.");
         } else if (auth.getSelectedProfile() == null) {
-            this.welcomeText.setText("<html>Welcome, player!</html>");
+            String user = Launcher.getCurrentInstance().getProfileManager().getSelectedUser();
+            if (user.startsWith("demo-")) {
+                user = user.substring(user.indexOf("-") + 1);
+            }
+            this.welcomeText.setText("<html>Welcome, " + user + "!</html>");
         } else {
             this.welcomeText.setText("<html>Welcome, <b>" + auth.getSelectedProfile().getName() + "</b></html>");
         }
         Profile profile = profileManager.getProfiles().isEmpty() ? null : profileManager.getSelectedProfile();
         List<VersionSyncInfo> versions = profile == null ? null : this.minecraftLauncher.getLauncher().getVersionManager().getVersions(profile.getVersionFilter());
-        VersionSyncInfo versionSyncInfo = version = profile == null || versions.isEmpty() ? null : versions.get(0);
+        VersionSyncInfo version = profile == null || versions.isEmpty() ? null : versions.get(0);
+        VersionSyncInfo versionSyncInfo = version;
         if (profile != null && profile.getLastVersionId() != null && (requestedVersion = this.minecraftLauncher.getLauncher().getVersionManager().getVersionSyncInfo(profile.getLastVersionId())) != null && requestedVersion.getLatestVersion() != null) {
             version = requestedVersion;
         }
@@ -142,6 +144,5 @@ public class PlayerInfoPanel extends JPanel implements RefreshedVersionsListener
             }
         });
     }
-
 }
 

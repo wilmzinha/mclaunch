@@ -1,3 +1,12 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.base.Objects
+ *  com.google.common.base.Predicate
+ *  com.google.common.base.Predicates
+ *  com.google.common.collect.Lists
+ */
 package com.mojang.launcher.game.process;
 
 import com.google.common.base.Objects;
@@ -10,7 +19,6 @@ import com.mojang.launcher.game.process.GameProcess;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 public class GameProcessBuilder {
@@ -38,7 +46,7 @@ public class GameProcessBuilder {
         return result;
     }
 
-    public /* varargs */ GameProcessBuilder withArguments(String ... commands) {
+    public GameProcessBuilder withArguments(String ... commands) {
         this.arguments.addAll(Arrays.asList(commands));
         return this;
     }
@@ -79,8 +87,7 @@ public class GameProcessBuilder {
     }
 
     public String toString() {
-        return Objects.toStringHelper(this).add("processPath", this.processPath).add("arguments", this.arguments).add("sysOutFilter", this.sysOutFilter).add("directory", this.directory).add("logProcessor", this.logProcessor).toString();
+        return Objects.toStringHelper((Object)this).add("processPath", (Object)this.processPath).add("arguments", this.arguments).add("sysOutFilter", this.sysOutFilter).add("directory", (Object)this.directory).add("logProcessor", (Object)this.logProcessor).toString();
     }
-
 }
 

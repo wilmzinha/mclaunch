@@ -1,8 +1,10 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
 package net.minecraft.launcher;
 
 import com.mojang.launcher.OperatingSystem;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,19 +58,6 @@ public class CompatibilityRule {
         return "Rule{action=" + (Object)((Object)this.action) + ", os=" + this.os + ", features=" + this.features + '}';
     }
 
-    public static enum Action {
-        ALLOW,
-        DISALLOW;
-        
-
-        private Action() {
-        }
-    }
-
-    public static interface FeatureMatcher {
-        public boolean hasFeature(String var1, Object var2);
-    }
-
     public class OSRestriction {
         private OperatingSystem name;
         private String version;
@@ -108,8 +97,8 @@ public class CompatibilityRule {
                     if (!matcher.matches()) {
                         return false;
                     }
-                //} catch (Throwable pattern2) {
-                } catch (Throwable e) { // pattern2 was already defined
+                }
+                catch (Throwable throwable) {
                     // empty catch block
                 }
             }
@@ -120,7 +109,8 @@ public class CompatibilityRule {
                     if (!matcher.matches()) {
                         return false;
                     }
-                } catch (Throwable pattern3) {
+                }
+                catch (Throwable throwable) {
                     // empty catch block
                 }
             }
@@ -132,5 +122,14 @@ public class CompatibilityRule {
         }
     }
 
+    public static interface FeatureMatcher {
+        public boolean hasFeature(String var1, Object var2);
+    }
+
+    public static enum Action {
+        ALLOW,
+        DISALLOW;
+
+    }
 }
 

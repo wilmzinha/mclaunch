@@ -1,6 +1,8 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
 package com.mojang.authlib.minecraft;
 
-import com.mojang.authlib.AuthenticationService;
 import com.mojang.authlib.HttpAuthenticationService;
 import com.mojang.authlib.minecraft.BaseMinecraftSessionService;
 

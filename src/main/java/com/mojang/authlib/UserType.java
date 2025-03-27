@@ -1,3 +1,6 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
 package com.mojang.authlib;
 
 import java.util.HashMap;
@@ -6,7 +9,7 @@ import java.util.Map;
 public enum UserType {
     LEGACY("legacy"),
     MOJANG("mojang");
-    
+
     private static final Map<String, UserType> BY_NAME;
     private final String name;
 

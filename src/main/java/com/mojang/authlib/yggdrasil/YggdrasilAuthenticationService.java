@@ -1,3 +1,18 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.gson.Gson
+ *  com.google.gson.GsonBuilder
+ *  com.google.gson.JsonDeserializationContext
+ *  com.google.gson.JsonDeserializer
+ *  com.google.gson.JsonElement
+ *  com.google.gson.JsonObject
+ *  com.google.gson.JsonParseException
+ *  com.google.gson.JsonSerializationContext
+ *  com.google.gson.JsonSerializer
+ *  org.apache.commons.lang3.StringUtils
+ */
 package com.mojang.authlib.yggdrasil;
 
 import com.google.gson.Gson;
@@ -7,7 +22,6 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.mojang.authlib.Agent;
@@ -43,10 +57,10 @@ extends HttpAuthenticationService {
         super(proxy);
         this.clientToken = clientToken;
         GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter((Type)((Object)GameProfile.class), new GameProfileSerializer());
-        builder.registerTypeAdapter((Type)((Object)PropertyMap.class), new PropertyMap.Serializer());
-        builder.registerTypeAdapter((Type)((Object)UUID.class), new UUIDTypeAdapter());
-        builder.registerTypeAdapter((Type)((Object)ProfileSearchResultsResponse.class), new ProfileSearchResultsResponse.Serializer());
+        builder.registerTypeAdapter((Type)((Object)GameProfile.class), (Object)new GameProfileSerializer());
+        builder.registerTypeAdapter((Type)((Object)PropertyMap.class), (Object)new PropertyMap.Serializer());
+        builder.registerTypeAdapter((Type)((Object)UUID.class), (Object)new UUIDTypeAdapter());
+        builder.registerTypeAdapter((Type)((Object)ProfileSearchResultsResponse.class), (Object)new ProfileSearchResultsResponse.Serializer());
         this.gson = builder.create();
     }
 
@@ -68,12 +82,11 @@ extends HttpAuthenticationService {
     protected <T extends Response> T makeRequest(URL url, Object input, Class<T> classOfT) throws AuthenticationException {
         try {
             String jsonResult = input == null ? this.performGetRequest(url) : this.performPostRequest(url, this.gson.toJson(input), "application/json");
-            //System.out.println(jsonResult);
             Response result = (Response)this.gson.fromJson(jsonResult, classOfT);
             if (result == null) {
                 return null;
             }
-            if (StringUtils.isNotBlank(result.getError())) {
+            if (StringUtils.isNotBlank((CharSequence)result.getError())) {
                 if ("UserMigratedException".equals(result.getCause())) {
                     throw new UserMigratedException(result.getErrorMessage());
                 }
@@ -105,7 +118,6 @@ extends HttpAuthenticationService {
         private GameProfileSerializer() {
         }
 
-        @Override
         public GameProfile deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject object = (JsonObject)json;
             UUID id = object.has("id") ? (UUID)context.deserialize(object.get("id"), (Type)((Object)UUID.class)) : null;
@@ -113,11 +125,10 @@ extends HttpAuthenticationService {
             return new GameProfile(id, name);
         }
 
-        @Override
         public JsonElement serialize(GameProfile src, Type typeOfSrc, JsonSerializationContext context) {
             JsonObject result = new JsonObject();
             if (src.getId() != null) {
-                result.add("id", context.serialize(src.getId()));
+                result.add("id", context.serialize((Object)src.getId()));
             }
             if (src.getName() != null) {
                 result.addProperty("name", src.getName());
@@ -125,6 +136,5 @@ extends HttpAuthenticationService {
             return result;
         }
     }
-
 }
 

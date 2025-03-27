@@ -1,11 +1,16 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  org.apache.logging.log4j.LogManager
+ *  org.apache.logging.log4j.Logger
+ */
 package net.minecraft.launcher.ui.tabs.website;
 
 import com.mojang.launcher.OperatingSystem;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Insets;
-import java.net.URI;
 import java.net.URL;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
@@ -71,6 +76,5 @@ implements Browser {
     @Override
     public void resize(Dimension size) {
     }
-
 }
 

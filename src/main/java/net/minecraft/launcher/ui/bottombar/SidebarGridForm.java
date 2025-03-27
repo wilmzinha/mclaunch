@@ -1,9 +1,11 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
 package net.minecraft.launcher.ui.bottombar;
 
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.LayoutManager;
 import javax.swing.JPanel;
 
 public abstract class SidebarGridForm
@@ -31,7 +33,7 @@ extends JPanel {
         constraints.weighty = 1.0;
         constraints.gridwidth = width;
         constraints.anchor = anchor;
-        this.add((Component)component, constraints);
+        this.add(component, constraints);
         return component;
     }
 }

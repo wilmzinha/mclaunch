@@ -1,3 +1,13 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.collect.Multimap
+ *  org.apache.commons.lang3.StringUtils
+ *  org.apache.commons.lang3.Validate
+ *  org.apache.logging.log4j.LogManager
+ *  org.apache.logging.log4j.Logger
+ */
 package com.mojang.authlib;
 
 import com.google.common.collect.Multimap;
@@ -9,11 +19,9 @@ import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.util.UUIDTypeAdapter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.LogManager;
@@ -37,13 +45,13 @@ implements UserAuthentication {
     private UserType userType;
 
     protected BaseUserAuthentication(AuthenticationService authenticationService) {
-        Validate.notNull(authenticationService);
+        Validate.notNull((Object)authenticationService);
         this.authenticationService = authenticationService;
     }
 
     @Override
     public boolean canLogIn() {
-        return !this.canPlayOnline() && StringUtils.isNotBlank(this.getUsername()) && StringUtils.isNotBlank(this.getPassword());
+        return !this.canPlayOnline() && StringUtils.isNotBlank((CharSequence)this.getUsername()) && StringUtils.isNotBlank((CharSequence)this.getPassword());
     }
 
     @Override
@@ -70,7 +78,7 @@ implements UserAuthentication {
 
     @Override
     public void setPassword(String password) {
-        if (this.isLoggedIn() && this.canPlayOnline() && StringUtils.isNotBlank(password)) {
+        if (this.isLoggedIn() && this.canPlayOnline() && StringUtils.isNotBlank((CharSequence)password)) {
             throw new IllegalStateException("Cannot set password whilst logged in & online");
         }
         this.password = password;
@@ -138,6 +146,8 @@ implements UserAuthentication {
     @Override
     public Map<String, Object> saveForStorage() {
         GameProfile selectedProfile;
+        HashMap<String, String> property;
+        ArrayList properties;
         HashMap<String, Object> result = new HashMap<String, Object>();
         if (this.getUsername() != null) {
             result.put(STORAGE_KEY_USER_NAME, this.getUsername());
@@ -148,9 +158,9 @@ implements UserAuthentication {
             result.put(STORAGE_KEY_USER_NAME, this.getUsername());
         }
         if (!this.getUserProperties().isEmpty()) {
-            ArrayList properties = new ArrayList();
+            properties = new ArrayList();
             for (Property userProperty : this.getUserProperties().values()) {
-                HashMap<String, String> property = new HashMap<String, String>();
+                property = new HashMap<String, String>();
                 property.put("name", userProperty.getName());
                 property.put("value", userProperty.getValue());
                 property.put("signature", userProperty.getSignature());
@@ -161,9 +171,9 @@ implements UserAuthentication {
         if ((selectedProfile = this.getSelectedProfile()) != null) {
             result.put(STORAGE_KEY_PROFILE_NAME, selectedProfile.getName());
             result.put(STORAGE_KEY_PROFILE_ID, selectedProfile.getId());
-            ArrayList properties = new ArrayList();
+            properties = new ArrayList();
             for (Property profileProperty : selectedProfile.getProperties().values()) {
-                HashMap<String, String> property = new HashMap<String, String>();
+                property = new HashMap();
                 property.put("name", profileProperty.getName());
                 property.put("value", profileProperty.getValue());
                 property.put("signature", profileProperty.getSignature());
@@ -222,7 +232,7 @@ implements UserAuthentication {
     public PropertyMap getUserProperties() {
         if (this.isLoggedIn()) {
             PropertyMap result = new PropertyMap();
-            result.putAll(this.getModifiableUserProperties());
+            result.putAll((Multimap)this.getModifiableUserProperties());
             return result;
         }
         return new PropertyMap();

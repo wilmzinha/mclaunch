@@ -1,3 +1,15 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.base.Objects
+ *  com.google.common.collect.Lists
+ *  com.google.common.collect.Maps
+ *  com.google.common.collect.Sets
+ *  org.apache.commons.lang3.text.StrSubstitutor
+ *  org.apache.logging.log4j.LogManager
+ *  org.apache.logging.log4j.Logger
+ */
 package net.minecraft.launcher.updater;
 
 import com.google.common.base.Objects;
@@ -26,8 +38,6 @@ import java.util.Set;
 import net.minecraft.launcher.CompatibilityRule;
 import net.minecraft.launcher.CurrentLaunchFeatureMatcher;
 import net.minecraft.launcher.Launcher;
-import net.minecraft.launcher.profile.AuthenticationDatabase;
-import net.minecraft.launcher.profile.Profile;
 import net.minecraft.launcher.profile.ProfileManager;
 import net.minecraft.launcher.updater.Argument;
 import net.minecraft.launcher.updater.ArgumentType;
@@ -151,7 +161,9 @@ implements CompleteVersion {
         ArrayList<File> result = new ArrayList<File>();
         for (Library library : libraries) {
             if (library.getNatives() != null) continue;
-            result.add(new File(base, "libraries/" + library.getArtifactPath()));
+            String file = library.getArtifactPath();
+            file = file.replace(":", "-");
+            result.add(new File(base, "libraries/" + file));
         }
         result.add(new File(base, "versions/" + this.getJar() + "/" + this.getJar() + ".jar"));
         return result;
@@ -163,10 +175,14 @@ implements CompleteVersion {
             if (library.getNatives() != null) {
                 String natives = library.getNatives().get((Object)os);
                 if (natives == null) continue;
-                neededFiles.add("libraries/" + library.getArtifactPath(natives));
+                String file = library.getArtifactPath(natives);
+                file = file.replace(":", "-");
+                neededFiles.add("libraries/" + file);
                 continue;
             }
-            neededFiles.add("libraries/" + library.getArtifactPath());
+            String file = library.getArtifactPath();
+            file = file.replace(":", "-");
+            neededFiles.add("libraries/" + file);
         }
         return neededFiles;
     }
@@ -174,8 +190,8 @@ implements CompleteVersion {
     public Set<Downloadable> getRequiredDownloadables(OperatingSystem os, Proxy proxy, File targetDirectory, boolean ignoreLocalFiles) throws MalformedURLException {
         HashSet<Downloadable> neededFiles = new HashSet<Downloadable>();
         for (Library library : this.getRelevantLibraries(this.createFeatureMatcher())) {
-            Downloadable download;
             File local;
+            Downloadable download;
             String file = null;
             String classifier = null;
             if (library.getNatives() != null) {
@@ -186,7 +202,7 @@ implements CompleteVersion {
             } else {
                 file = library.getArtifactPath();
             }
-            if (file == null || (download = library.createDownload(proxy, file, local = new File(targetDirectory, "libraries/" + file), ignoreLocalFiles, classifier)) == null) continue;
+            if ((file = file.replace(":", "-")) == null || (download = library.createDownload(proxy, file, local = new File(targetDirectory, "libraries/" + file), ignoreLocalFiles, classifier)) == null) continue;
             neededFiles.add(download);
         }
         return neededFiles;
@@ -241,7 +257,7 @@ implements CompleteVersion {
     }
 
     public CompleteMinecraftVersion resolve(MinecraftVersionManager versionManager) throws IOException {
-        return this.resolve(versionManager, Sets.<String>newHashSet());
+        return this.resolve(versionManager, Sets.newHashSet());
     }
 
     protected CompleteMinecraftVersion resolve(MinecraftVersionManager versionManager, Set<String> resolvedSoFar) throws IOException {
@@ -279,7 +295,7 @@ implements CompleteVersion {
             result.jar = this.jar;
         }
         if (this.libraries != null) {
-            ArrayList<Library> newLibraries = Lists.newArrayList();
+            ArrayList newLibraries = Lists.newArrayList();
             for (Library library : this.libraries) {
                 newLibraries.add(new Library(library));
             }
@@ -310,7 +326,7 @@ implements CompleteVersion {
     }
 
     public CompleteMinecraftVersion getSavableVersion() {
-        return Objects.firstNonNull(this.savableVersion, this);
+        return (CompleteMinecraftVersion)Objects.firstNonNull((Object)this.savableVersion, (Object)this);
     }
 
     public DownloadInfo getDownloadURL(DownloadType type) {
@@ -319,7 +335,7 @@ implements CompleteVersion {
 
     public AssetIndexInfo getAssetIndex() {
         if (this.assetIndex == null) {
-            this.assetIndex = new AssetIndexInfo(Objects.firstNonNull(this.assets, "legacy"));
+            this.assetIndex = new AssetIndexInfo((String)Objects.firstNonNull((Object)this.assets, (Object)"legacy"));
         }
         return this.assetIndex;
     }
@@ -342,9 +358,6 @@ implements CompleteVersion {
             if (type == ArgumentType.GAME) {
                 for (String arg : this.minecraftArguments.split(" ")) {
                     builder.withArguments(substitutor.replace(arg));
-                }
-                if (featureMatcher.hasFeature("is_demo_user", true)) {
-                    builder.withArguments("--demo");
                 }
                 if (featureMatcher.hasFeature("has_custom_resolution", true)) {
                     builder.withArguments("--width", substitutor.replace("${resolution_width}"), "--height", substitutor.replace("${resolution_height}"));

@@ -1,6 +1,11 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  org.apache.commons.lang3.StringUtils
+ */
 package com.mojang.authlib.legacy;
 
-import com.mojang.authlib.AuthenticationService;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.HttpAuthenticationService;
 import com.mojang.authlib.HttpUserAuthentication;
@@ -12,7 +17,6 @@ import com.mojang.util.UUIDTypeAdapter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 
 public class LegacyUserAuthentication
@@ -30,14 +34,14 @@ extends HttpUserAuthentication {
 
     @Override
     public void logIn() throws AuthenticationException {
-        String response;
         String sessionToken;
-        String profileId;
         String profileName;
-        if (StringUtils.isBlank(this.getUsername())) {
+        String profileId;
+        String response;
+        if (StringUtils.isBlank((CharSequence)this.getUsername())) {
             throw new InvalidCredentialsException("Invalid username");
         }
-        if (StringUtils.isBlank(this.getPassword())) {
+        if (StringUtils.isBlank((CharSequence)this.getPassword())) {
             throw new InvalidCredentialsException("Invalid password");
         }
         HashMap<String, Object> args = new HashMap<String, Object>();
@@ -55,7 +59,7 @@ extends HttpUserAuthentication {
             profileId = split[4];
             profileName = split[2];
             sessionToken = split[3];
-            if (StringUtils.isBlank(profileId) || StringUtils.isBlank(profileName) || StringUtils.isBlank(sessionToken)) {
+            if (StringUtils.isBlank((CharSequence)profileId) || StringUtils.isBlank((CharSequence)profileName) || StringUtils.isBlank((CharSequence)sessionToken)) {
                 throw new AuthenticationException("Unknown response from authentication server: " + response);
             }
         } else {

@@ -1,17 +1,21 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  org.apache.commons.lang3.time.StopWatch
+ *  org.apache.logging.log4j.LogManager
+ *  org.apache.logging.log4j.Logger
+ */
 package com.mojang.launcher.updater.download;
 
 import com.mojang.launcher.updater.download.DownloadListener;
 import com.mojang.launcher.updater.download.Downloadable;
-import com.mojang.launcher.updater.download.ProgressContainer;
-import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.commons.lang3.time.StopWatch;
@@ -21,7 +25,7 @@ import org.apache.logging.log4j.Logger;
 public class DownloadJob {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final int MAX_ATTEMPTS_PER_FILE = 5;
-    private static final int ASSUMED_AVERAGE_FILE_SIZE = 5242880;
+    private static final int ASSUMED_AVERAGE_FILE_SIZE = 0x500000;
     private final Queue<Downloadable> remainingFiles = new ConcurrentLinkedQueue<Downloadable>();
     private final List<Downloadable> allFiles = Collections.synchronizedList(new ArrayList());
     private final List<Downloadable> failures = Collections.synchronizedList(new ArrayList());
@@ -62,7 +66,7 @@ public class DownloadJob {
         }
     }
 
-    public /* varargs */ void addDownloadables(Downloadable ... downloadables) {
+    public void addDownloadables(Downloadable ... downloadables) {
         if (this.started) {
             throw new IllegalStateException("Cannot add to download job that has already started");
         }
@@ -122,7 +126,7 @@ public class DownloadJob {
                 this.successful.add(downloadable);
                 downloadable.setEndTime(System.currentTimeMillis());
                 downloadable.getMonitor().setCurrent(downloadable.getMonitor().getTotal());
-                LOGGER.info("Finished downloading " + downloadable.getTarget() + " for job '" + this.name + "'" + ": " + result);
+                LOGGER.info("Finished downloading " + downloadable.getTarget() + " for job '" + this.name + "': " + result);
             }
             catch (Throwable t) {
                 LOGGER.warn("Couldn't download " + downloadable.getUrl() + " for job '" + this.name + "'", t);
@@ -170,6 +174,5 @@ public class DownloadJob {
     public StopWatch getStopWatch() {
         return this.stopWatch;
     }
-
 }
 

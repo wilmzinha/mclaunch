@@ -1,3 +1,9 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  org.apache.commons.codec.binary.Base64
+ */
 package com.mojang.authlib.properties;
 
 import java.security.InvalidKeyException;
@@ -43,7 +49,7 @@ public class Property {
             Signature signature = Signature.getInstance("SHA1withRSA");
             signature.initVerify(publicKey);
             signature.update(this.value.getBytes());
-            return signature.verify(Base64.decodeBase64(this.signature));
+            return signature.verify(Base64.decodeBase64((String)this.signature));
         }
         catch (NoSuchAlgorithmException e) {
             e.printStackTrace();

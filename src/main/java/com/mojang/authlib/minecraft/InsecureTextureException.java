@@ -1,3 +1,6 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
 package com.mojang.authlib.minecraft;
 
 import com.mojang.authlib.GameProfile;
@@ -9,25 +12,6 @@ public class InsecureTextureException
 extends RuntimeException {
     public InsecureTextureException(String message) {
         super(message);
-    }
-
-    public static class MissingTextureException
-    extends InsecureTextureException {
-        public MissingTextureException() {
-            super("No texture information found");
-        }
-    }
-
-    public static class OutdatedTextureException
-    extends InsecureTextureException {
-        private final Date validFrom;
-        private final Calendar limit;
-
-        public OutdatedTextureException(Date validFrom, Calendar limit) {
-            super("Decrypted textures payload is too old (" + validFrom + ", but we need it to be at least " + limit + ")");
-            this.validFrom = validFrom;
-            this.limit = limit;
-        }
     }
 
     public static class WrongTextureOwnerException
@@ -44,5 +28,23 @@ extends RuntimeException {
         }
     }
 
+    public static class OutdatedTextureException
+    extends InsecureTextureException {
+        private final Date validFrom;
+        private final Calendar limit;
+
+        public OutdatedTextureException(Date validFrom, Calendar limit) {
+            super("Decrypted textures payload is too old (" + validFrom + ", but we need it to be at least " + limit + ")");
+            this.validFrom = validFrom;
+            this.limit = limit;
+        }
+    }
+
+    public static class MissingTextureException
+    extends InsecureTextureException {
+        public MissingTextureException() {
+            super("No texture information found");
+        }
+    }
 }
 

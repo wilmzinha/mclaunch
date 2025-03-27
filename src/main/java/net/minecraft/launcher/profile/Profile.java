@@ -1,10 +1,15 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.base.Objects
+ *  com.google.common.collect.Sets
+ */
 package net.minecraft.launcher.profile;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Sets;
 import com.mojang.launcher.updater.VersionFilter;
-import com.mojang.launcher.versions.ReleaseType;
-import com.mojang.launcher.versions.ReleaseTypeFactory;
 import java.io.File;
 import java.util.Set;
 import net.minecraft.launcher.game.MinecraftReleaseType;
@@ -17,7 +22,7 @@ implements Comparable<Profile> {
     public static final String DEFAULT_JRE_ARGUMENTS_32BIT = "-Xmx512M -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:-UseAdaptiveSizePolicy -Xmn128M";
     public static final Resolution DEFAULT_RESOLUTION = new Resolution(854, 480);
     public static final LauncherVisibilityRule DEFAULT_LAUNCHER_VISIBILITY = LauncherVisibilityRule.CLOSE_LAUNCHER;
-    public static final Set<MinecraftReleaseType> DEFAULT_RELEASE_TYPES = Sets.newHashSet(MinecraftReleaseType.RELEASE);
+    public static final Set<MinecraftReleaseType> DEFAULT_RELEASE_TYPES = Sets.newHashSet(new MinecraftReleaseType[]{MinecraftReleaseType.RELEASE});
     private String name;
     private File gameDir;
     private String lastVersionId;
@@ -50,7 +55,7 @@ implements Comparable<Profile> {
     }
 
     public String getName() {
-        return Objects.firstNonNull(this.name, "");
+        return (String)Objects.firstNonNull((Object)this.name, (Object)"");
     }
 
     public void setName(String name) {
@@ -124,11 +129,11 @@ implements Comparable<Profile> {
     }
 
     public VersionFilter<MinecraftReleaseType> getVersionFilter() {
-        final VersionFilter<MinecraftReleaseType> filter = new VersionFilter<MinecraftReleaseType>(MinecraftReleaseTypeFactory.instance()).setMaxCount(Integer.MAX_VALUE);
+        VersionFilter<MinecraftReleaseType> filter = new VersionFilter<MinecraftReleaseType>(MinecraftReleaseTypeFactory.instance()).setMaxCount(Integer.MAX_VALUE);
         if (this.allowedReleaseTypes == null) {
-            filter.onlyForTypes((MinecraftReleaseType[]) Profile.DEFAULT_RELEASE_TYPES.toArray(new MinecraftReleaseType[ Profile.DEFAULT_RELEASE_TYPES.size() ]));
+            filter.onlyForTypes(DEFAULT_RELEASE_TYPES.toArray(new MinecraftReleaseType[DEFAULT_RELEASE_TYPES.size()]));
         } else {
-            filter.onlyForTypes((MinecraftReleaseType[]) this.allowedReleaseTypes.toArray(new MinecraftReleaseType[ this.allowedReleaseTypes.size() ]));
+            filter.onlyForTypes(this.allowedReleaseTypes.toArray(new MinecraftReleaseType[this.allowedReleaseTypes.size()]));
         }
         return filter;
     }
@@ -173,6 +178,5 @@ implements Comparable<Profile> {
             return this.height;
         }
     }
-
 }
 

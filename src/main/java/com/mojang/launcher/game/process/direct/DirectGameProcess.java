@@ -1,3 +1,11 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.base.Objects
+ *  com.google.common.base.Predicate
+ *  com.google.common.collect.EvictingQueue
+ */
 package com.mojang.launcher.game.process.direct;
 
 import com.google.common.base.Objects;
@@ -14,7 +22,7 @@ extends AbstractGameProcess {
     private static final int MAX_SYSOUT_LINES = 5;
     private final Process process;
     protected final DirectProcessInputMonitor monitor;
-    private final Collection<String> sysOutLines = EvictingQueue.create(5);
+    private final Collection<String> sysOutLines = EvictingQueue.create((int)5);
 
     public DirectGameProcess(List<String> commands, Process process, Predicate<String> sysOutFilter, GameOutputLogProcessor logProcessor) {
         super(commands, sysOutFilter);
@@ -55,7 +63,7 @@ extends AbstractGameProcess {
     }
 
     public String toString() {
-        return Objects.toStringHelper(this).add("process", this.process).add("monitor", this.monitor).toString();
+        return Objects.toStringHelper((Object)this).add("process", (Object)this.process).add("monitor", (Object)this.monitor).toString();
     }
 
     @Override

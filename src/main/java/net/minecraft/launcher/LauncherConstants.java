@@ -1,3 +1,13 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.base.Objects
+ *  com.google.gson.Gson
+ *  com.google.gson.GsonBuilder
+ *  com.google.gson.TypeAdapterFactory
+ *  org.apache.commons.io.IOUtils
+ */
 package net.minecraft.launcher;
 
 import com.google.common.base.Objects;
@@ -15,14 +25,12 @@ import org.apache.commons.io.IOUtils;
 
 public class LauncherConstants {
     public static final int VERSION_FORMAT = 21;
-    public static final String VERSION_STRING = "1.0.2";
     public static final int PROFILES_FORMAT = 1;
     public static final URI URL_REGISTER = LauncherConstants.constantURI("https://account.mojang.com/register");
     public static final String URL_JAR_FALLBACK = "https://s3.amazonaws.com/Minecraft.Download/";
-    public static final String URL_RESOURCE_BASE = "http://resources.download.minecraft.net/";
+    public static final String URL_RESOURCE_BASE = "https://resources.download.minecraft.net/";
     public static final String URL_LIBRARY_BASE = "https://libraries.minecraft.net/";
-    //public static final String URL_WEBSITE = "http://mcupdate.tumblr.com"; // The old legacy blog (no longer updated)
-    public static final String URL_WEBSITE = "http://mclaunch.github.io/mcupdate";
+    public static final String URL_WEBSITE = "http://mcupdate.tumblr.com/";
     public static final String URL_SUPPORT = "http://help.mojang.com/?ref=launcher";
     public static final String URL_STATUS_CHECKER = "http://status.mojang.com/check";
     public static final int UNVERSIONED_BOOTSTRAP_VERSION = 0;
@@ -63,45 +71,29 @@ public class LauncherConstants {
     }
 
     public static String getVersionName() {
-        //return Objects.firstNonNull(LauncherConstants.class.getPackage().getImplementationVersion(), "unknown");
-        return VERSION_STRING;
+        return (String)Objects.firstNonNull((Object)LauncherConstants.class.getPackage().getImplementationVersion(), (Object)"1.6.93");
     }
 
     /*
      * WARNING - Removed try catching itself - possible behaviour change.
      */
     private static LauncherProperties getProperties() {
-        Gson gson = new GsonBuilder().registerTypeAdapterFactory(new LowerCaseEnumTypeAdapterFactory()).create();
+        Gson gson = new GsonBuilder().registerTypeAdapterFactory((TypeAdapterFactory)new LowerCaseEnumTypeAdapterFactory()).create();
         InputStream stream = LauncherConstants.class.getResourceAsStream("/launcher_properties.json");
         if (stream != null) {
             try {
-                LauncherProperties launcherProperties = gson.fromJson(IOUtils.toString(stream), LauncherProperties.class);
-                return launcherProperties;
+                LauncherProperties launcherProperties;
+                LauncherProperties launcherProperties2 = launcherProperties = (LauncherProperties)gson.fromJson(IOUtils.toString((InputStream)stream), LauncherProperties.class);
+                return launcherProperties2;
             }
             catch (IOException e) {
                 e.printStackTrace();
             }
             finally {
-                IOUtils.closeQuietly(stream);
+                IOUtils.closeQuietly((InputStream)stream);
             }
         }
         return new LauncherProperties();
-    }
-
-    public static enum LauncherEnvironment {
-        PRODUCTION(""),
-        STAGING(" (STAGING VERSION, NOT FINAL)"),
-        DEV(" (DEV VERSION, NOT FINAL)");
-        
-        private final String title;
-
-        private LauncherEnvironment(String title) {
-            this.title = title;
-        }
-
-        public String getTitle() {
-            return this.title;
-        }
     }
 
     public static class LauncherProperties {
@@ -117,5 +109,20 @@ public class LauncherConstants {
         }
     }
 
+    public static enum LauncherEnvironment {
+        PRODUCTION(""),
+        STAGING(" (STAGING VERSION, NOT FINAL)"),
+        DEV(" (DEV VERSION, NOT FINAL)");
+
+        private final String title;
+
+        private LauncherEnvironment(String title) {
+            this.title = title;
+        }
+
+        public String getTitle() {
+            return this.title;
+        }
+    }
 }
 

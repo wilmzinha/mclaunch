@@ -1,3 +1,19 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.collect.ForwardingMultimap
+ *  com.google.common.collect.LinkedHashMultimap
+ *  com.google.common.collect.Multimap
+ *  com.google.gson.JsonArray
+ *  com.google.gson.JsonDeserializationContext
+ *  com.google.gson.JsonDeserializer
+ *  com.google.gson.JsonElement
+ *  com.google.gson.JsonObject
+ *  com.google.gson.JsonParseException
+ *  com.google.gson.JsonSerializationContext
+ *  com.google.gson.JsonSerializer
+ */
 package com.mojang.authlib.properties;
 
 import com.google.common.collect.ForwardingMultimap;
@@ -9,20 +25,16 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.mojang.authlib.properties.Property;
 import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 public class PropertyMap
 extends ForwardingMultimap<String, Property> {
     private final Multimap<String, Property> properties = LinkedHashMultimap.create();
 
-    @Override
     protected Multimap<String, Property> delegate() {
         return this.properties;
     }
@@ -30,18 +42,17 @@ extends ForwardingMultimap<String, Property> {
     public static class Serializer
     implements JsonSerializer<PropertyMap>,
     JsonDeserializer<PropertyMap> {
-        @Override
         public PropertyMap deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             PropertyMap result;
-            block5 : {
-                block4 : {
+            block5: {
+                block4: {
                     result = new PropertyMap();
                     if (!(json instanceof JsonObject)) break block4;
                     JsonObject object = (JsonObject)json;
                     for (Map.Entry<String, JsonElement> entry : object.entrySet()) {
                         if (!(entry.getValue() instanceof JsonArray)) continue;
                         for (JsonElement element : (JsonArray)entry.getValue()) {
-                            result.put(entry.getKey(), new Property(entry.getKey(), element.getAsString()));
+                            result.put(entry.getKey(), new Property((String)entry.getKey(), element.getAsString()));
                         }
                     }
                     break block5;
@@ -62,7 +73,6 @@ extends ForwardingMultimap<String, Property> {
             return result;
         }
 
-        @Override
         public JsonElement serialize(PropertyMap src, Type typeOfSrc, JsonSerializationContext context) {
             JsonArray result = new JsonArray();
             for (Property property : src.values()) {
@@ -72,11 +82,10 @@ extends ForwardingMultimap<String, Property> {
                 if (property.hasSignature()) {
                     object.addProperty("signature", property.getSignature());
                 }
-                result.add(object);
+                result.add((JsonElement)object);
             }
             return result;
         }
     }
-
 }
 

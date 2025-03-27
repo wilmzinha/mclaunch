@@ -1,12 +1,16 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  org.apache.commons.lang3.Validate
+ */
 package com.mojang.authlib.legacy;
 
 import com.mojang.authlib.Agent;
 import com.mojang.authlib.GameProfileRepository;
 import com.mojang.authlib.HttpAuthenticationService;
-import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.legacy.LegacyMinecraftSessionService;
 import com.mojang.authlib.legacy.LegacyUserAuthentication;
-import com.mojang.authlib.minecraft.MinecraftSessionService;
 import java.net.Proxy;
 import org.apache.commons.lang3.Validate;
 
@@ -18,7 +22,7 @@ extends HttpAuthenticationService {
 
     @Override
     public LegacyUserAuthentication createUserAuthentication(Agent agent) {
-        Validate.notNull(agent);
+        Validate.notNull((Object)agent);
         if (agent != Agent.MINECRAFT) {
             throw new IllegalArgumentException("Legacy authentication cannot handle anything but Minecraft");
         }

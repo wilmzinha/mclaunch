@@ -1,3 +1,15 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.gson.JsonArray
+ *  com.google.gson.JsonDeserializationContext
+ *  com.google.gson.JsonDeserializer
+ *  com.google.gson.JsonElement
+ *  com.google.gson.JsonObject
+ *  com.google.gson.JsonParseException
+ *  org.apache.commons.lang3.text.StrSubstitutor
+ */
 package net.minecraft.launcher.updater;
 
 import com.google.gson.JsonArray;
@@ -45,7 +57,6 @@ public class Argument {
 
     public static class Serializer
     implements JsonDeserializer<Argument> {
-        @Override
         public Argument deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             if (json.isJsonPrimitive()) {
                 return new Argument(new String[]{json.getAsString()}, null);
@@ -75,6 +86,5 @@ public class Argument {
             throw new JsonParseException("Invalid argument, must be object or string");
         }
     }
-
 }
 

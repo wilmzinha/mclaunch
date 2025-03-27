@@ -1,16 +1,13 @@
+/*
+ * Decompiled with CFR 0.152.
+ */
 package net.minecraft.launcher.ui.tabs;
 
 import com.mojang.launcher.events.GameOutputLogProcessor;
 import com.mojang.launcher.game.process.GameProcess;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Insets;
 import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JMenuItem;
@@ -18,11 +15,9 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.Element;
@@ -51,7 +46,7 @@ implements GameOutputLogProcessor {
                     StringSelection ss = new StringSelection(GameOutputTab.this.console.getText());
                     Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, null);
                 }
-                catch (Exception ss) {
+                catch (Exception exception) {
                     // empty catch block
                 }
             }
@@ -87,7 +82,6 @@ implements GameOutputLogProcessor {
             @Override
             public void changedUpdate(DocumentEvent e) {
             }
-
         });
     }
 
@@ -132,6 +126,5 @@ implements GameOutputLogProcessor {
         }
         this.print(logLine + "\n");
     }
-
 }
 

@@ -1,3 +1,10 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  org.apache.logging.log4j.LogManager
+ *  org.apache.logging.log4j.Logger
+ */
 package com.mojang.launcher.updater.download;
 
 import com.mojang.launcher.updater.download.ProgressContainer;
@@ -11,7 +18,6 @@ import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
-import java.net.URLConnection;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -54,8 +60,7 @@ public abstract class Downloadable {
      * WARNING - Removed try catching itself - possible behaviour change.
      */
     public static String getDigest(File file, String algorithm, int hashLength) {
-        DigestInputStream stream;
-        stream = null;
+        DigestInputStream stream = null;
         try {
             int read;
             stream = new DigestInputStream(new FileInputStream(file), MessageDigest.getInstance(algorithm));
@@ -63,10 +68,12 @@ public abstract class Downloadable {
             while ((read = stream.read(buffer)) > 0) {
             }
             Downloadable.closeSilently(stream);
+            Downloadable.closeSilently(stream);
         }
         catch (Exception ignored) {
-            String read = null;
-            return read;
+            String read;
+            String string = read = null;
+            return string;
         }
         finally {
             Downloadable.closeSilently(stream);

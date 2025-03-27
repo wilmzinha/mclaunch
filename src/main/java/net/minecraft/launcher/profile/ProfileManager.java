@@ -1,3 +1,24 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.base.Objects
+ *  com.google.common.collect.Lists
+ *  com.google.common.collect.Maps
+ *  com.google.gson.Gson
+ *  com.google.gson.GsonBuilder
+ *  com.google.gson.JsonDeserializationContext
+ *  com.google.gson.JsonDeserializer
+ *  com.google.gson.JsonElement
+ *  com.google.gson.JsonObject
+ *  com.google.gson.JsonParseException
+ *  com.google.gson.JsonParser
+ *  com.google.gson.JsonSerializationContext
+ *  com.google.gson.JsonSerializer
+ *  com.google.gson.TypeAdapterFactory
+ *  com.google.gson.reflect.TypeToken
+ *  org.apache.commons.io.FileUtils
+ */
 package net.minecraft.launcher.profile;
 
 import com.google.common.base.Objects;
@@ -11,12 +32,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
-import com.mojang.authlib.AuthenticationService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.launcher.updater.DateTypeAdapter;
 import com.mojang.launcher.updater.FileTypeAdapter;
@@ -24,20 +43,15 @@ import com.mojang.launcher.updater.LowerCaseEnumTypeAdapterFactory;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.net.Proxy;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import net.minecraft.launcher.Launcher;
 import net.minecraft.launcher.LauncherConstants;
-import net.minecraft.launcher.MinecraftUserInterface;
 import net.minecraft.launcher.profile.AuthenticationDatabase;
 import net.minecraft.launcher.profile.Profile;
 import net.minecraft.launcher.profile.RefreshedProfilesListener;
@@ -61,11 +75,11 @@ public class ProfileManager {
         this.launcher = launcher;
         this.profileFile = new File(launcher.getLauncher().getWorkingDirectory(), "launcher_profiles.json");
         GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapterFactory(new LowerCaseEnumTypeAdapterFactory());
-        builder.registerTypeAdapter((Type)((Object)Date.class), new DateTypeAdapter());
-        builder.registerTypeAdapter((Type)((Object)File.class), new FileTypeAdapter());
-        builder.registerTypeAdapter((Type)((Object)AuthenticationDatabase.class), new AuthenticationDatabase.Serializer(launcher));
-        builder.registerTypeAdapter((Type)((Object)RawProfileList.class), new RawProfileList.Serializer(launcher));
+        builder.registerTypeAdapterFactory((TypeAdapterFactory)new LowerCaseEnumTypeAdapterFactory());
+        builder.registerTypeAdapter((Type)((Object)Date.class), (Object)new DateTypeAdapter());
+        builder.registerTypeAdapter((Type)((Object)File.class), (Object)new FileTypeAdapter());
+        builder.registerTypeAdapter((Type)((Object)AuthenticationDatabase.class), (Object)new AuthenticationDatabase.Serializer(launcher));
+        builder.registerTypeAdapter((Type)((Object)RawProfileList.class), (Object)new RawProfileList.Serializer(launcher));
         builder.setPrettyPrinting();
         this.gson = builder.create();
         this.authDatabase = new AuthenticationDatabase(new YggdrasilAuthenticationService(launcher.getLauncher().getProxy(), launcher.getClientToken().toString()));
@@ -73,7 +87,7 @@ public class ProfileManager {
 
     public void saveProfiles() throws IOException {
         RawProfileList rawProfileList = new RawProfileList(this.profiles, this.getSelectedProfile().getName(), this.selectedUser, this.launcher.getClientToken(), this.authDatabase);
-        FileUtils.writeStringToFile(this.profileFile, this.gson.toJson(rawProfileList));
+        FileUtils.writeStringToFile((File)this.profileFile, (String)this.gson.toJson((Object)rawProfileList));
     }
 
     public boolean loadProfiles() throws IOException {
@@ -82,7 +96,7 @@ public class ProfileManager {
         this.selectedUser = null;
         if (this.profileFile.isFile()) {
             JsonObject version;
-            JsonObject object = this.parser.parse(FileUtils.readFileToString(this.profileFile)).getAsJsonObject();
+            JsonObject object = this.parser.parse(FileUtils.readFileToString((File)this.profileFile)).getAsJsonObject();
             if (object.has("launcherVersion") && (version = object.getAsJsonObject("launcherVersion")).has("profilesFormat") && version.getAsJsonPrimitive("profilesFormat").getAsInt() != 1) {
                 if (this.launcher.getUserInterface().shouldDowngradeProfiles()) {
                     File target = new File(this.profileFile.getParentFile(), "launcher_profiles.old.json");
@@ -99,9 +113,9 @@ public class ProfileManager {
                 return false;
             }
             if (object.has("clientToken")) {
-                this.launcher.setClientToken(this.gson.fromJson(object.get("clientToken"), UUID.class));
+                this.launcher.setClientToken((UUID)this.gson.fromJson(object.get("clientToken"), UUID.class));
             }
-            RawProfileList rawProfileList = this.gson.fromJson((JsonElement)object, RawProfileList.class);
+            RawProfileList rawProfileList = (RawProfileList)this.gson.fromJson((JsonElement)object, RawProfileList.class);
             this.profiles.putAll(rawProfileList.profiles);
             this.selectedProfile = rawProfileList.selectedProfile;
             this.selectedUser = rawProfileList.selectedUser;
@@ -166,8 +180,8 @@ public class ProfileManager {
     }
 
     public void setSelectedUser(String selectedUser) {
-        boolean update;
-        boolean bl = update = !Objects.equal(this.selectedUser, selectedUser);
+        boolean update = !Objects.equal((Object)this.selectedUser, (Object)selectedUser);
+        boolean bl = update;
         if (update) {
             this.selectedUser = selectedUser;
             this.fireUserChangedEvent();
@@ -235,25 +249,21 @@ public class ProfileManager {
                 return new RawProfileList((Map) profiles, selectedProfile, selectedUser, clientToken, database);
             }
 
-            @Override
             public JsonElement serialize(RawProfileList src, Type typeOfSrc, JsonSerializationContext context) {
                 JsonObject version = new JsonObject();
                 version.addProperty("name", LauncherConstants.getVersionName());
-                version.addProperty("format", 21);
-                version.addProperty("profilesFormat", 1);
+                version.addProperty("format", (Number)21);
+                version.addProperty("profilesFormat", (Number)1);
                 JsonObject object = new JsonObject();
                 object.add("profiles", context.serialize(src.profiles));
-                object.add("selectedProfile", context.serialize(src.selectedProfile));
-                object.add("clientToken", context.serialize(src.clientToken));
-                object.add("authenticationDatabase", context.serialize(src.authenticationDatabase));
-                object.add("selectedUser", context.serialize(src.selectedUser));
-                object.add("launcherVersion", version);
+                object.add("selectedProfile", context.serialize((Object)src.selectedProfile));
+                object.add("clientToken", context.serialize((Object)src.clientToken));
+                object.add("authenticationDatabase", context.serialize((Object)src.authenticationDatabase));
+                object.add("selectedUser", context.serialize((Object)src.selectedUser));
+                object.add("launcherVersion", (JsonElement)version);
                 return object;
             }
-
         }
-
     }
-
 }
 

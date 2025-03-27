@@ -1,29 +1,31 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  org.apache.commons.lang3.ArrayUtils
+ *  org.apache.commons.lang3.StringUtils
+ *  org.apache.logging.log4j.LogManager
+ *  org.apache.logging.log4j.Logger
+ */
 package net.minecraft.launcher.ui.popups.login;
 
 import com.mojang.authlib.Agent;
-import com.mojang.authlib.AuthenticationService;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.exceptions.InvalidCredentialsException;
 import com.mojang.authlib.exceptions.UserMigratedException;
 import com.mojang.launcher.OperatingSystem;
-import com.mojang.launcher.updater.VersionManager;
 import com.mojang.util.UUIDTypeAdapter;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.net.URI;
-import java.util.UUID;
-import java.util.concurrent.ThreadPoolExecutor;
 import javax.swing.Box;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -31,18 +33,17 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import net.minecraft.launcher.Launcher;
 import net.minecraft.launcher.LauncherConstants;
 import net.minecraft.launcher.profile.AuthenticationDatabase;
-import net.minecraft.launcher.profile.ProfileManager;
-import net.minecraft.launcher.ui.popups.login.AuthErrorForm;
 import net.minecraft.launcher.ui.popups.login.LogInPopup;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class LogInForm extends JPanel implements ActionListener {
+public class LogInForm
+extends JPanel
+implements ActionListener {
     private static final Logger LOGGER = LogManager.getLogger();
     private final LogInPopup popup;
     private final JTextField usernameField = new JTextField();
@@ -130,7 +131,7 @@ public class LogInForm extends JPanel implements ActionListener {
     }
 
     public void tryLogIn() {
-        if (this.authentication.isLoggedIn() && this.authentication.getSelectedProfile() == null && ArrayUtils.isNotEmpty(this.authentication.getAvailableProfiles())) {
+        if (this.authentication.isLoggedIn() && this.authentication.getSelectedProfile() == null && ArrayUtils.isNotEmpty((Object[])this.authentication.getAvailableProfiles())) {
             this.popup.setCanLogIn(false);
             GameProfile selectedProfile = null;
             for (GameProfile profile : this.authentication.getAvailableProfiles()) {
@@ -178,7 +179,7 @@ public class LogInForm extends JPanel implements ActionListener {
                         LogInForm.this.authentication.logIn();
                         AuthenticationDatabase authDatabase = LogInForm.this.popup.getMinecraftLauncher().getProfileManager().getAuthDatabase();
                         if (LogInForm.this.authentication.getSelectedProfile() == null) {
-                            if (ArrayUtils.isNotEmpty(LogInForm.this.authentication.getAvailableProfiles())) {
+                            if (ArrayUtils.isNotEmpty((Object[])LogInForm.this.authentication.getAvailableProfiles())) {
                                 for (GameProfile profile : LogInForm.this.authentication.getAvailableProfiles()) {
                                     LogInForm.this.userDropdown.addItem(profile.getName());
                                 }
@@ -191,7 +192,7 @@ public class LogInForm extends JPanel implements ActionListener {
                                         LogInForm.this.userDropdownPanel.setVisible(true);
                                         LogInForm.this.popup.repack();
                                         LogInForm.this.popup.setCanLogIn(true);
-                                        LogInForm.this.passwordField.setText(StringUtils.repeat('*', passwordLength));
+                                        LogInForm.this.passwordField.setText(StringUtils.repeat((char)'*', (int)passwordLength));
                                     }
                                 });
                             } else {
@@ -220,10 +221,8 @@ public class LogInForm extends JPanel implements ActionListener {
                         LogInForm.this.popup.setCanLogIn(true);
                     }
                 }
-
             });
         }
     }
-
 }
 

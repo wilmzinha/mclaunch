@@ -1,23 +1,42 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.collect.Lists
+ *  com.google.common.collect.Sets
+ *  com.google.gson.Gson
+ *  joptsimple.ArgumentAcceptingOptionSpec
+ *  joptsimple.NonOptionArgumentSpec
+ *  joptsimple.OptionException
+ *  joptsimple.OptionParser
+ *  joptsimple.OptionSet
+ *  joptsimple.OptionSpec
+ *  org.apache.commons.io.Charsets
+ *  org.apache.commons.io.FileUtils
+ *  org.apache.commons.io.filefilter.AgeFileFilter
+ *  org.apache.commons.io.filefilter.DirectoryFileFilter
+ *  org.apache.commons.io.filefilter.FileFileFilter
+ *  org.apache.commons.io.filefilter.FileFilterUtils
+ *  org.apache.commons.io.filefilter.IOFileFilter
+ *  org.apache.commons.io.filefilter.PrefixFileFilter
+ *  org.apache.commons.io.filefilter.TrueFileFilter
+ *  org.apache.logging.log4j.LogManager
+ *  org.apache.logging.log4j.Logger
+ */
 package net.minecraft.launcher;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.mojang.authlib.Agent;
-import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.UserAuthentication;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.exceptions.InvalidCredentialsException;
 import com.mojang.launcher.OperatingSystem;
-import com.mojang.launcher.UserInterface;
 import com.mojang.launcher.updater.DateTypeAdapter;
-import com.mojang.launcher.updater.VersionFilter;
-import com.mojang.launcher.updater.VersionManager;
 import com.mojang.launcher.updater.VersionSyncInfo;
 import com.mojang.launcher.updater.download.assets.AssetIndex;
 import com.mojang.launcher.versions.CompleteVersion;
-import com.mojang.launcher.versions.ReleaseType;
-import com.mojang.launcher.versions.ReleaseTypeFactory;
 import com.mojang.launcher.versions.Version;
 import com.mojang.util.UUIDTypeAdapter;
 import java.io.File;
@@ -26,7 +45,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -37,11 +55,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
 import javax.swing.JFrame;
 import joptsimple.ArgumentAcceptingOptionSpec;
 import joptsimple.NonOptionArgumentSpec;
@@ -49,8 +63,6 @@ import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
-import joptsimple.OptionSpecBuilder;
-import net.minecraft.launcher.CompatibilityRule;
 import net.minecraft.launcher.LauncherConstants;
 import net.minecraft.launcher.MinecraftUserInterface;
 import net.minecraft.launcher.SwingUserInterface;
@@ -60,13 +72,11 @@ import net.minecraft.launcher.game.MinecraftReleaseTypeFactory;
 import net.minecraft.launcher.profile.AuthenticationDatabase;
 import net.minecraft.launcher.profile.Profile;
 import net.minecraft.launcher.profile.ProfileManager;
-import net.minecraft.launcher.updater.AssetIndexInfo;
 import net.minecraft.launcher.updater.CompleteMinecraftVersion;
 import net.minecraft.launcher.updater.Library;
 import net.minecraft.launcher.updater.LocalVersionList;
 import net.minecraft.launcher.updater.MinecraftVersionManager;
 import net.minecraft.launcher.updater.RemoteVersionList;
-import net.minecraft.launcher.updater.VersionList;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.AgeFileFilter;
@@ -300,7 +310,7 @@ public class Launcher {
         File assetsDir = new File(this.getLauncher().getWorkingDirectory(), "assets");
         File indexDir = new File(assetsDir, "indexes");
         File objectsDir = new File(assetsDir, "objects");
-        HashSet<String> referencedObjects = Sets.newHashSet();
+        HashSet referencedObjects = Sets.newHashSet();
         if (!objectsDir.isDirectory()) {
             return;
         }
@@ -309,7 +319,7 @@ public class Launcher {
             CompleteMinecraftVersion version = (CompleteMinecraftVersion)syncInfo.getLocalVersion();
             String assetVersion = version.getAssetIndex().getId();
             File indexFile = new File(indexDir, assetVersion + ".json");
-            AssetIndex index = this.gson.fromJson(FileUtils.readFileToString(indexFile, Charsets.UTF_8), AssetIndex.class);
+            AssetIndex index = (AssetIndex)this.gson.fromJson(FileUtils.readFileToString((File)indexFile, (Charset)Charsets.UTF_8), AssetIndex.class);
             for (AssetIndex.AssetObject object : index.getUniqueObjects().keySet()) {
                 referencedObjects.add(object.getHash().toLowerCase());
             }
@@ -321,8 +331,8 @@ public class Launcher {
                 if (files == null) continue;
                 for (File file : files) {
                     if (referencedObjects.contains(file.getName().toLowerCase())) continue;
-                    LOGGER.info("Cleaning up orphaned object {}", file.getName());
-                    FileUtils.deleteQuietly(file);
+                    LOGGER.info("Cleaning up orphaned object {}", (Object)file.getName());
+                    FileUtils.deleteQuietly((File)file);
                 }
             }
         }
@@ -331,7 +341,7 @@ public class Launcher {
 
     public void cleanupOrphanedLibraries() throws IOException {
         File librariesDir = new File(this.getLauncher().getWorkingDirectory(), "libraries");
-        HashSet<File> referencedLibraries = Sets.newHashSet();
+        HashSet referencedLibraries = Sets.newHashSet();
         if (!librariesDir.isDirectory()) {
             return;
         }
@@ -353,12 +363,12 @@ public class Launcher {
                 referencedLibraries.add(new File(librariesDir, file + ".sha"));
             }
         }
-        Collection<File> libraries = FileUtils.listFiles(librariesDir, TrueFileFilter.TRUE, TrueFileFilter.TRUE);
+        Collection<File> libraries = FileUtils.listFiles((File)librariesDir, (IOFileFilter)TrueFileFilter.TRUE, (IOFileFilter)TrueFileFilter.TRUE);
         if (libraries != null) {
             for (File file : libraries) {
                 if (referencedLibraries.contains(file)) continue;
-                LOGGER.info("Cleaning up orphaned library {}", file);
-                FileUtils.deleteQuietly(file);
+                LOGGER.info("Cleaning up orphaned library {}", (Object)file);
+                FileUtils.deleteQuietly((File)file);
             }
         }
         Launcher.deleteEmptyDirectories(librariesDir);
@@ -370,11 +380,11 @@ public class Launcher {
         if (!skinsDir.isDirectory()) {
             return;
         }
-        Collection<File> files = FileUtils.listFiles(skinsDir, new AgeFileFilter(System.currentTimeMillis() - 604800000L), TrueFileFilter.TRUE);
+        Collection<File> files = FileUtils.listFiles((File)skinsDir, (IOFileFilter)new AgeFileFilter(System.currentTimeMillis() - 604800000L), (IOFileFilter)TrueFileFilter.TRUE);
         if (files != null) {
             for (File file : files) {
-                LOGGER.info("Cleaning up old skin {}", file.getName());
-                FileUtils.deleteQuietly(file);
+                LOGGER.info("Cleaning up old skin {}", (Object)file.getName());
+                FileUtils.deleteQuietly((File)file);
             }
         }
         Launcher.deleteEmptyDirectories(skinsDir);
@@ -395,14 +405,14 @@ public class Launcher {
             for (File directory : directories) {
                 File lastUsedFile = new File(directory, ".lastused");
                 if (lastUsedFile.isFile()) {
-                    Date lastUsed = dateAdapter.deserializeToDate(FileUtils.readFileToString(lastUsedFile));
+                    Date lastUsed = dateAdapter.deserializeToDate(FileUtils.readFileToString((File)lastUsedFile));
                     if (!cutoff.after(lastUsed)) continue;
-                    LOGGER.info("Cleaning up old virtual directory {}", directory);
-                    FileUtils.deleteQuietly(directory);
+                    LOGGER.info("Cleaning up old virtual directory {}", (Object)directory);
+                    FileUtils.deleteQuietly((File)directory);
                     continue;
                 }
-                LOGGER.info("Cleaning up strange virtual directory {}", directory);
-                FileUtils.deleteQuietly(directory);
+                LOGGER.info("Cleaning up strange virtual directory {}", (Object)directory);
+                FileUtils.deleteQuietly((File)directory);
             }
         }
         Launcher.deleteEmptyDirectories(virtualsDir);
@@ -418,11 +428,11 @@ public class Launcher {
         File[] versions = root.listFiles((FileFilter)DirectoryFileFilter.DIRECTORY);
         if (versions != null) {
             for (File version : versions) {
-                File[] files = version.listFiles((FilenameFilter)FileFilterUtils.and(new PrefixFileFilter(version.getName() + "-natives-"), ageFilter));
+                File[] files = version.listFiles((FilenameFilter)FileFilterUtils.and((IOFileFilter[])new IOFileFilter[]{new PrefixFileFilter(version.getName() + "-natives-"), ageFilter}));
                 if (files == null) continue;
                 for (File folder : files) {
                     LOGGER.debug("Deleting " + folder);
-                    FileUtils.deleteQuietly(folder);
+                    FileUtils.deleteQuietly((File)folder);
                 }
             }
         }
@@ -431,7 +441,7 @@ public class Launcher {
     public void cleanupOrphanedVersions() {
         Version version;
         LOGGER.info("Looking for orphaned versions to clean up...");
-        HashSet<String> referencedVersions = Sets.newHashSet();
+        HashSet referencedVersions = Sets.newHashSet();
         for (Profile profile : this.getProfileManager().getProfiles().values()) {
             String lastVersionId = profile.getLastVersionId();
             VersionSyncInfo syncInfo = null;
@@ -455,7 +465,7 @@ public class Launcher {
         for (VersionSyncInfo versionSyncInfo : this.getLauncher().getVersionManager().getInstalledVersions()) {
             if (!(versionSyncInfo.getLocalVersion() instanceof CompleteMinecraftVersion) || referencedVersions.contains((version = (CompleteVersion)versionSyncInfo.getLocalVersion()).getId()) || version.getType() != MinecraftReleaseType.SNAPSHOT) continue;
             if (versionSyncInfo.isOnRemote()) {
-                LOGGER.info("Deleting orphaned version {} because it's a snapshot available on remote", version.getId());
+                LOGGER.info("Deleting orphaned version {} because it's a snapshot available on remote", (Object)version.getId());
                 try {
                     this.getLauncher().getVersionManager().uninstallVersion((CompleteVersion)version);
                 }
@@ -465,7 +475,7 @@ public class Launcher {
                 continue;
             }
             if (!version.getUpdatedTime().before(cutoff)) continue;
-            LOGGER.info("Deleting orphaned version {} because it's an unsupported old snapshot", version.getId());
+            LOGGER.info("Deleting orphaned version {} because it's an unsupported old snapshot", (Object)version.getId());
             try {
                 this.getLauncher().getVersionManager().uninstallVersion((CompleteVersion)version);
             }
@@ -476,7 +486,7 @@ public class Launcher {
     }
 
     private static Collection<File> listEmptyDirectories(File directory) {
-        ArrayList<File> result = Lists.newArrayList();
+        ArrayList result = Lists.newArrayList();
         File[] files = directory.listFiles();
         if (files != null) {
             for (File file : files) {
@@ -510,10 +520,6 @@ public class Launcher {
     }
 
     public void performCleanups() throws IOException {
-        this.cleanupOrphanedVersions();
-        this.cleanupOrphanedAssets();
-        this.cleanupOldSkins();
-        this.cleanupOldNatives();
         this.cleanupOldVirtuals();
     }
 
@@ -537,6 +543,5 @@ public class Launcher {
         Thread.currentThread().setContextClassLoader(Launcher.class.getClassLoader());
         LOGGER = LogManager.getLogger();
     }
-
 }
 

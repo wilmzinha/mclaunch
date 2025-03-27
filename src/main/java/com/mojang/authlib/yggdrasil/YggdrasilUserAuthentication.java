@@ -1,28 +1,39 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.collect.Multimap
+ *  net.lenni0451.commons.httpclient.HttpClient
+ *  net.raphimc.minecraftauth.MinecraftAuth
+ *  net.raphimc.minecraftauth.step.AbstractStep$InitialInput
+ *  net.raphimc.minecraftauth.step.java.session.StepFullJavaSession$FullJavaSession
+ *  net.raphimc.minecraftauth.step.msa.StepCredentialsMsaCode$MsaCredentials
+ *  org.apache.commons.lang3.StringUtils
+ *  org.apache.logging.log4j.LogManager
+ *  org.apache.logging.log4j.Logger
+ */
 package com.mojang.authlib.yggdrasil;
 
 import com.google.common.collect.Multimap;
 import com.mojang.authlib.Agent;
-import com.mojang.authlib.AuthenticationService;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.HttpAuthenticationService;
 import com.mojang.authlib.HttpUserAuthentication;
 import com.mojang.authlib.UserType;
 import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.exceptions.InvalidCredentialsException;
-import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
-import com.mojang.authlib.yggdrasil.request.AuthenticationRequest;
-import com.mojang.authlib.yggdrasil.request.RefreshRequest;
 import com.mojang.authlib.yggdrasil.request.ValidateRequest;
-import com.mojang.authlib.yggdrasil.response.AuthenticationResponse;
-import com.mojang.authlib.yggdrasil.response.RefreshResponse;
 import com.mojang.authlib.yggdrasil.response.Response;
 import com.mojang.authlib.yggdrasil.response.User;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.UUID;
-import org.apache.commons.lang3.ArrayUtils;
+import net.lenni0451.commons.httpclient.HttpClient;
+import net.raphimc.minecraftauth.MinecraftAuth;
+import net.raphimc.minecraftauth.step.AbstractStep;
+import net.raphimc.minecraftauth.step.java.session.StepFullJavaSession;
+import net.raphimc.minecraftauth.step.msa.StepCredentialsMsaCode;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,7 +47,6 @@ extends HttpUserAuthentication {
     private static final URL ROUTE_VALIDATE = HttpAuthenticationService.constantURL("https://authserver.mojang.com/validate");
     private static final URL ROUTE_INVALIDATE = HttpAuthenticationService.constantURL("https://authserver.mojang.com/invalidate");
     private static final URL ROUTE_SIGNOUT = HttpAuthenticationService.constantURL("https://authserver.mojang.com/signout");
-
     private static final String STORAGE_KEY_ACCESS_TOKEN = "accessToken";
     private final Agent agent;
     private GameProfile[] profiles;
@@ -50,53 +60,53 @@ extends HttpUserAuthentication {
 
     @Override
     public boolean canLogIn() {
-        return !this.canPlayOnline() && StringUtils.isNotBlank(this.getUsername()) && (StringUtils.isNotBlank(this.getPassword()) || StringUtils.isNotBlank(this.getAuthenticatedToken()));
+        return !this.canPlayOnline() && StringUtils.isNotBlank((CharSequence)this.getUsername()) && (StringUtils.isNotBlank((CharSequence)this.getPassword()) || StringUtils.isNotBlank((CharSequence)this.getAuthenticatedToken()));
     }
 
     @Override
     public void logIn() throws AuthenticationException {
-        if (StringUtils.isBlank(this.getUsername())) {
+        if (StringUtils.isBlank((CharSequence)this.getUsername())) {
             throw new InvalidCredentialsException("Invalid username");
         }
-        if (StringUtils.isNotBlank(this.getAuthenticatedToken())) {
+        if (StringUtils.isNotBlank((CharSequence)this.getAuthenticatedToken())) {
             this.logInWithToken();
-        } else if (StringUtils.isNotBlank(this.getPassword())) {
+        } else if (StringUtils.isNotBlank((CharSequence)this.getPassword())) {
             this.logInWithPassword();
         } else {
-            throw new InvalidCredentialsException("Invalid password");
+            this.setUserid(this.getUsername());
+            this.isOnline = false;
+            this.getModifiableUserProperties().clear();
         }
     }
 
     protected void logInWithPassword() throws AuthenticationException {
-        if (StringUtils.isBlank(this.getUsername())) {
+        if (StringUtils.isBlank((CharSequence)this.getUsername())) {
             throw new InvalidCredentialsException("Invalid username");
         }
-        if (StringUtils.isBlank(this.getPassword())) {
+        if (StringUtils.isBlank((CharSequence)this.getPassword())) {
             throw new InvalidCredentialsException("Invalid password");
         }
         LOGGER.info("Logging in with username & password");
-        AuthenticationRequest request = new AuthenticationRequest(this, this.getUsername(), this.getPassword());
-        AuthenticationResponse response = this.getAuthenticationService().makeRequest(ROUTE_AUTHENTICATE, request, AuthenticationResponse.class);
-        if (!response.getClientToken().equals(this.getAuthenticationService().getClientToken())) {
-            throw new AuthenticationException("Server requested we change our client token. Don't know how to handle this!");
+        HttpClient httpClient = MinecraftAuth.createHttpClient();
+        StepFullJavaSession.FullJavaSession javaSession = null;
+        try {
+            javaSession = (StepFullJavaSession.FullJavaSession)MinecraftAuth.JAVA_CREDENTIALS_LOGIN.getFromInput(httpClient, (AbstractStep.InitialInput)new StepCredentialsMsaCode.MsaCredentials(this.getUsername(), this.getPassword()));
         }
-        if (response.getSelectedProfile() != null) {
-            this.setUserType(response.getSelectedProfile().isLegacy() ? UserType.LEGACY : UserType.MOJANG);
-        } else if (ArrayUtils.isNotEmpty(response.getAvailableProfiles())) {
-            this.setUserType(response.getAvailableProfiles()[0].isLegacy() ? UserType.LEGACY : UserType.MOJANG);
+        catch (Exception e) {
+            e.printStackTrace();
+            throw new InvalidCredentialsException("Invalid password");
         }
-        User user = response.getUser();
-        if (user != null && user.getId() != null) {
-            this.setUserid(user.getId());
-        } else {
-            this.setUserid(this.getUsername());
-        }
+        System.out.println("Username: " + javaSession.getMcProfile().getName());
+        System.out.println("Access token: " + javaSession.getMcProfile().getMcToken().getAccessToken());
+        System.out.println("Player certificates: " + javaSession.getPlayerCertificates());
+        this.setUserType(UserType.MOJANG);
+        this.setUserid(javaSession.getMcProfile().getName());
         this.isOnline = true;
-        this.accessToken = response.getAccessToken();
-        this.profiles = response.getAvailableProfiles();
-        this.setSelectedProfile(response.getSelectedProfile());
+        this.accessToken = javaSession.getMcProfile().getMcToken().getAccessToken();
+        GameProfile profile = new GameProfile(javaSession.getMcProfile().getId(), javaSession.getMcProfile().getName());
+        this.profiles = new GameProfile[]{profile};
+        this.setSelectedProfile(profile);
         this.getModifiableUserProperties().clear();
-        this.updateUserProperties(user);
     }
 
     protected void updateUserProperties(User user) {
@@ -104,48 +114,25 @@ extends HttpUserAuthentication {
             return;
         }
         if (user.getProperties() != null) {
-            this.getModifiableUserProperties().putAll(user.getProperties());
+            this.getModifiableUserProperties().putAll((Multimap)user.getProperties());
         }
     }
 
     protected void logInWithToken() throws AuthenticationException {
-        if (StringUtils.isBlank(this.getUserID())) {
-            if (StringUtils.isBlank(this.getUsername())) {
+        if (StringUtils.isBlank((CharSequence)this.getUserID())) {
+            if (StringUtils.isBlank((CharSequence)this.getUsername())) {
                 this.setUserid(this.getUsername());
             } else {
                 throw new InvalidCredentialsException("Invalid uuid & username");
             }
         }
-        if (StringUtils.isBlank(this.getAuthenticatedToken())) {
+        if (StringUtils.isBlank((CharSequence)this.getAuthenticatedToken())) {
             throw new InvalidCredentialsException("Invalid access token");
         }
         LOGGER.info("Logging in with access token");
-        if (this.checkTokenValidity()) {
-            LOGGER.debug("Skipping refresh call as we're safely logged in.");
-            this.isOnline = true;
-            return;
-        }
-        RefreshRequest request = new RefreshRequest(this);
-        RefreshResponse response = this.getAuthenticationService().makeRequest(ROUTE_REFRESH, request, RefreshResponse.class);
-        if (!response.getClientToken().equals(this.getAuthenticationService().getClientToken())) {
-            throw new AuthenticationException("Server requested we change our client token. Don't know how to handle this!");
-        }
-        if (response.getSelectedProfile() != null) {
-            this.setUserType(response.getSelectedProfile().isLegacy() ? UserType.LEGACY : UserType.MOJANG);
-        } else if (ArrayUtils.isNotEmpty(response.getAvailableProfiles())) {
-            this.setUserType(response.getAvailableProfiles()[0].isLegacy() ? UserType.LEGACY : UserType.MOJANG);
-        }
-        if (response.getUser() != null && response.getUser().getId() != null) {
-            this.setUserid(response.getUser().getId());
-        } else {
-            this.setUserid(this.getUsername());
-        }
+        this.setUserid(this.getUsername());
         this.isOnline = true;
-        this.accessToken = response.getAccessToken();
-        this.profiles = response.getAvailableProfiles();
-        this.setSelectedProfile(response.getSelectedProfile());
         this.getModifiableUserProperties().clear();
-        this.updateUserProperties(response.getUser());
     }
 
     protected boolean checkTokenValidity() throws AuthenticationException {
@@ -174,7 +161,7 @@ extends HttpUserAuthentication {
 
     @Override
     public boolean isLoggedIn() {
-        return StringUtils.isNotBlank(this.accessToken);
+        return StringUtils.isNotBlank((CharSequence)this.accessToken);
     }
 
     @Override
@@ -184,23 +171,8 @@ extends HttpUserAuthentication {
 
     @Override
     public void selectGameProfile(GameProfile profile) throws AuthenticationException {
-        if (!this.isLoggedIn()) {
-            throw new AuthenticationException("Cannot change game profile whilst not logged in");
-        }
-        if (this.getSelectedProfile() != null) {
-            throw new AuthenticationException("Cannot change game profile. You must log out and back in.");
-        }
-        if (profile == null || !ArrayUtils.contains(this.profiles, profile)) {
-            throw new IllegalArgumentException("Invalid profile '" + profile + "'");
-        }
-        RefreshRequest request = new RefreshRequest(this, profile);
-        RefreshResponse response = this.getAuthenticationService().makeRequest(ROUTE_REFRESH, request, RefreshResponse.class);
-        if (!response.getClientToken().equals(this.getAuthenticationService().getClientToken())) {
-            throw new AuthenticationException("Server requested we change our client token. Don't know how to handle this!");
-        }
-        this.isOnline = true;
-        this.accessToken = response.getAccessToken();
-        this.setSelectedProfile(response.getSelectedProfile());
+        this.isOnline = false;
+        this.setSelectedProfile(profile);
     }
 
     @Override
@@ -212,7 +184,7 @@ extends HttpUserAuthentication {
     @Override
     public Map<String, Object> saveForStorage() {
         Map<String, Object> result = super.saveForStorage();
-        if (StringUtils.isNotBlank(this.getAuthenticatedToken())) {
+        if (StringUtils.isNotBlank((CharSequence)this.getAuthenticatedToken())) {
             result.put(STORAGE_KEY_ACCESS_TOKEN, this.getAuthenticatedToken());
         }
         return result;

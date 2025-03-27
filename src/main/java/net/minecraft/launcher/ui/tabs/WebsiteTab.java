@@ -1,16 +1,18 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  org.apache.logging.log4j.LogManager
+ *  org.apache.logging.log4j.Logger
+ */
 package net.minecraft.launcher.ui.tabs;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.LayoutManager;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.beans.IntrospectionException;
 import java.io.File;
 import java.lang.reflect.Method;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import javax.swing.JPanel;
@@ -48,7 +50,7 @@ extends JPanel {
         }
         File jfxrt = new File(System.getProperty("java.home"), "lib/jfxrt.jar");
         if (jfxrt.isFile()) {
-            LOGGER.debug("Attempting to load {}...", jfxrt);
+            LOGGER.debug("Attempting to load {}...", (Object)jfxrt);
             try {
                 WebsiteTab.addToSystemClassLoader(jfxrt);
                 LOGGER.info("JFX has been detected & successfully loaded");
@@ -59,7 +61,7 @@ extends JPanel {
                 return new LegacySwingBrowser();
             }
         }
-        LOGGER.debug("JFX was not found at {}", jfxrt);
+        LOGGER.debug("JFX was not found at {}", (Object)jfxrt);
         return new LegacySwingBrowser();
     }
 
@@ -94,6 +96,5 @@ extends JPanel {
             return false;
         }
     }
-
 }
 

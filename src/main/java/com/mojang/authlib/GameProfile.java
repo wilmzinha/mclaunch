@@ -1,3 +1,10 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  org.apache.commons.lang3.StringUtils
+ *  org.apache.commons.lang3.builder.ToStringBuilder
+ */
 package com.mojang.authlib;
 
 import com.mojang.authlib.properties.PropertyMap;
@@ -12,7 +19,7 @@ public class GameProfile {
     private boolean legacy;
 
     public GameProfile(UUID id, String name) {
-        if (id == null && StringUtils.isBlank(name)) {
+        if (id == null && StringUtils.isBlank((CharSequence)name)) {
             throw new IllegalArgumentException("Name and ID cannot both be blank");
         }
         this.id = id;
@@ -32,7 +39,7 @@ public class GameProfile {
     }
 
     public boolean isComplete() {
-        return this.id != null && StringUtils.isNotBlank(this.getName());
+        return this.id != null && StringUtils.isNotBlank((CharSequence)this.getName());
     }
 
     public boolean equals(Object o) {
@@ -46,10 +53,7 @@ public class GameProfile {
         if (this.id != null ? !this.id.equals(that.id) : that.id != null) {
             return false;
         }
-        if (this.name != null ? !this.name.equals(that.name) : that.name != null) {
-            return false;
-        }
-        return true;
+        return !(this.name != null ? !this.name.equals(that.name) : that.name != null);
     }
 
     public int hashCode() {
@@ -59,7 +63,7 @@ public class GameProfile {
     }
 
     public String toString() {
-        return new ToStringBuilder(this).append("id", this.id).append("name", this.name).append("properties", this.properties).append("legacy", this.legacy).toString();
+        return new ToStringBuilder((Object)this).append("id", (Object)this.id).append("name", (Object)this.name).append("properties", (Object)this.properties).append("legacy", this.legacy).toString();
     }
 
     public boolean isLegacy() {

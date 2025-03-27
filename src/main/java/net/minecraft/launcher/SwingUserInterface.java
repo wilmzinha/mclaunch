@@ -1,56 +1,50 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.util.concurrent.Futures
+ *  com.google.common.util.concurrent.SettableFuture
+ *  org.apache.logging.log4j.LogManager
+ *  org.apache.logging.log4j.Logger
+ */
 package net.minecraft.launcher;
 
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.SettableFuture;
-import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.UserAuthentication;
 import com.mojang.launcher.OperatingSystem;
 import com.mojang.launcher.events.GameOutputLogProcessor;
 import com.mojang.launcher.updater.DownloadProgress;
-import com.mojang.launcher.updater.VersionManager;
 import com.mojang.launcher.versions.CompleteVersion;
-import java.awt.AWTEvent;
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.border.Border;
 import net.minecraft.launcher.Launcher;
 import net.minecraft.launcher.LauncherConstants;
 import net.minecraft.launcher.MinecraftUserInterface;
 import net.minecraft.launcher.game.MinecraftGameRunner;
-import net.minecraft.launcher.profile.AuthenticationDatabase;
 import net.minecraft.launcher.profile.Profile;
 import net.minecraft.launcher.profile.ProfileManager;
-import net.minecraft.launcher.ui.BottomBarPanel;
 import net.minecraft.launcher.ui.LauncherPanel;
-import net.minecraft.launcher.ui.bottombar.PlayButtonPanel;
 import net.minecraft.launcher.ui.popups.login.LogInPopup;
 import net.minecraft.launcher.ui.tabs.CrashReportTab;
 import net.minecraft.launcher.ui.tabs.GameOutputTab;
-import net.minecraft.launcher.ui.tabs.LauncherTabPanel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -142,7 +136,7 @@ implements MinecraftUserInterface {
                 this.frame.setIconImage(ImageIO.read(in));
             }
         }
-        catch (IOException in) {
+        catch (IOException iOException) {
             // empty catch block
         }
         this.launcherPanel = new LauncherPanel(this.minecraftLauncher);
@@ -328,21 +322,29 @@ implements MinecraftUserInterface {
 
             @Override
             public void run() {
+                String name;
                 GameOutputTab tab = new GameOutputTab(SwingUserInterface.this.minecraftLauncher);
-                future.set(tab);
+                future.set((Object)tab);
                 UserAuthentication auth = gameRunner.getAuth();
-                String name = auth.getSelectedProfile() == null ? "Demo" : auth.getSelectedProfile().getName();
+                String string = name = auth.getSelectedProfile() == null ? "Demo" : auth.getSelectedProfile().getName();
+                if (name.equals("Demo")) {
+                    String user = Launcher.getCurrentInstance().getProfileManager().getSelectedUser();
+                    if (user.startsWith("demo-")) {
+                        user = user.substring(user.indexOf("-") + 1);
+                    }
+                    name = user;
+                }
                 SwingUserInterface.this.launcherPanel.getTabPanel().removeTab("Game Output (" + name + ")");
                 SwingUserInterface.this.launcherPanel.getTabPanel().addTab("Game Output (" + name + ")", tab);
                 SwingUserInterface.this.launcherPanel.getTabPanel().setSelectedComponent(tab);
             }
         });
-        return (GameOutputLogProcessor)Futures.getUnchecked(future);
+        return (GameOutputLogProcessor)Futures.getUnchecked((Future)future);
     }
 
     @Override
     public boolean shouldDowngradeProfiles() {
-        int result = JOptionPane.showOptionDialog(this.frame, LauncherConstants.LAUNCHER_OUT_OF_DATE_MESSAGE, "Outdated launcher", 0, 0, null, LauncherConstants.LAUNCHER_OUT_OF_DATE_BUTTONS, LauncherConstants.LAUNCHER_OUT_OF_DATE_BUTTONS[0]);
+        int result = JOptionPane.showOptionDialog(this.frame, "It looks like you've used a newer launcher than this one! If you go back to using this one, we will need to reset your configuration.", "Outdated launcher", 0, 0, null, LauncherConstants.LAUNCHER_OUT_OF_DATE_BUTTONS, LauncherConstants.LAUNCHER_OUT_OF_DATE_BUTTONS[0]);
         return result == 1;
     }
 
@@ -354,6 +356,5 @@ implements MinecraftUserInterface {
     public JFrame getFrame() {
         return this.frame;
     }
-
 }
 

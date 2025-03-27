@@ -1,37 +1,34 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.collect.Sets
+ */
 package net.minecraft.launcher.ui.popups.profile;
 
 import com.google.common.collect.Sets;
 import com.mojang.launcher.events.RefreshedVersionsListener;
-import com.mojang.launcher.updater.VersionFilter;
 import com.mojang.launcher.updater.VersionManager;
 import com.mojang.launcher.updater.VersionSyncInfo;
-import com.mojang.launcher.versions.ReleaseType;
 import com.mojang.launcher.versions.Version;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.LayoutManager;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
-import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
-import net.minecraft.launcher.Launcher;
-import net.minecraft.launcher.MinecraftUserInterface;
 import net.minecraft.launcher.SwingUserInterface;
 import net.minecraft.launcher.game.MinecraftReleaseType;
 import net.minecraft.launcher.profile.Profile;
@@ -124,7 +121,7 @@ implements RefreshedVersionsListener {
 
     private void updateCustomVersionFilter() {
         Profile profile = this.editor.getProfile();
-        HashSet<MinecraftReleaseType> newTypes = Sets.newHashSet(Profile.DEFAULT_RELEASE_TYPES);
+        HashSet newTypes = Sets.newHashSet(Profile.DEFAULT_RELEASE_TYPES);
         for (ReleaseTypeCheckBox type : this.customVersionTypes) {
             if (type.isSelected()) {
                 newTypes.add(type.getType());
@@ -182,19 +179,6 @@ implements RefreshedVersionsListener {
         });
     }
 
-    private static class ReleaseTypeCheckBox extends JCheckBox {
-        private final MinecraftReleaseType type;
-
-        private ReleaseTypeCheckBox(MinecraftReleaseType type) {
-            super(type.getDescription());
-            this.type = type;
-        }
-
-        public MinecraftReleaseType getType() {
-            return this.type;
-        }
-    }
-
     private static class VersionListRenderer
     extends BasicComboBoxRenderer {
         private VersionListRenderer() {
@@ -212,5 +196,18 @@ implements RefreshedVersionsListener {
         }
     }
 
+    private static class ReleaseTypeCheckBox
+    extends JCheckBox {
+        private final MinecraftReleaseType type;
+
+        private ReleaseTypeCheckBox(MinecraftReleaseType type) {
+            super(type.getDescription());
+            this.type = type;
+        }
+
+        public MinecraftReleaseType getType() {
+            return this.type;
+        }
+    }
 }
 
